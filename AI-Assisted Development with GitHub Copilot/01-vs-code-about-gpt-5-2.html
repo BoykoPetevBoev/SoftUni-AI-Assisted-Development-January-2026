@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Visual Studio Code</title>
+  <meta name="description" content="A simple overview page about Visual Studio Code (VS Code): what it is, why people use it, and a few practical tips." />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #0f1b33;
+      --text: #e8eefc;
+      --muted: #a9b7d6;
+      --brand: #3ea6ff;
+      --accent: #9b7bff;
+      --border: rgba(255, 255, 255, 0.10);
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      --radius: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(62, 166, 255, 0.25), transparent 50%),
+        radial-gradient(900px 600px at 85% 25%, rgba(155, 123, 255, 0.20), transparent 45%),
+        radial-gradient(900px 650px at 50% 95%, rgba(62, 166, 255, 0.12), transparent 40%),
+        var(--bg);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--brand);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+    header {
+      padding: 44px 18px 20px;
+    }
+
+    .wrap {
+      width: min(1050px, 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      margin: 0 0 10px;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 0 0 12px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: rgba(0,0,0,0.18);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      padding: 0 18px 36px;
+    }
+
+    .span-6 { grid-column: span 6; }
+    .span-5 { grid-column: span 5; }
+    .span-7 { grid-column: span 7; }
+    .span-12 { grid-column: span 12; }
+
+    @media (max-width: 860px) {
+      .span-6, .span-5, .span-7 { grid-column: span 12; }
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin: 0 0 10px;
+      letter-spacing: 0.2px;
+    }
+
+    p { margin: 0 0 10px; }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    li { margin: 6px 0; }
+
+    .k {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.18);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.12);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--muted);
+    }
+
+    th { color: var(--text); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+
+    .footer {
+      padding: 10px 18px 44px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .note {
+      font-size: 0.95rem;
+      color: var(--muted);
+      border-left: 3px solid rgba(62, 166, 255, 0.7);
+      padding-left: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap hero">
+      <section class="card">
+        <h1>Visual Studio Code (VS Code)</h1>
+        <p class="subtitle">
+          A lightweight, extensible editor for coding, debugging, and working with Git — available on Windows, macOS, and Linux.
+        </p>
+        <p>
+          VS Code combines a fast editor with language features (IntelliSense, refactoring), built-in Git tools,
+          a powerful extension ecosystem, and a modern terminal and debugger.
+        </p>
+        <div class="badges" aria-label="Key facts">
+          <span class="badge">Cross-platform</span>
+          <span class="badge">Extensions</span>
+          <span class="badge">Integrated Git</span>
+          <span class="badge">Debugger</span>
+          <span class="badge">Terminal</span>
+        </div>
+        <p class="note">
+          This page was generated with GPT-5.2 as part of a learning workspace.
+        </p>
+      </section>
+
+      <aside class="card" aria-label="Quick links">
+        <h2>Quick Links</h2>
+        <ul>
+          <li><a href="https://code.visualstudio.com/" target="_blank" rel="noreferrer">Official VS Code website</a></li>
+          <li><a href="https://marketplace.visualstudio.com/" target="_blank" rel="noreferrer">Extensions Marketplace</a></li>
+          <li><a href="https://code.visualstudio.com/docs" target="_blank" rel="noreferrer">Documentation</a></li>
+          <li><a href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf" target="_blank" rel="noreferrer">Keyboard shortcuts (Windows PDF)</a></li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" aria-label="VS Code overview">
+      <article class="card span-7">
+        <h2>Why Developers Like VS Code</h2>
+        <p>
+          VS Code is popular because it scales from quick edits to full projects. You can start with a simple folder,
+          then add extensions for your language, formatter, linter, test runner, containers, or remote development.
+        </p>
+        <ul>
+          <li><strong>Productive editing:</strong> multi-cursor, find/replace, snippets, and powerful navigation.</li>
+          <li><strong>Language features:</strong> IntelliSense, symbol search, rename, go-to definition, diagnostics.</li>
+          <li><strong>Integrated workflows:</strong> Git, terminal, tasks, debugging, and tests from one place.</li>
+          <li><strong>Customizable:</strong> settings sync, themes, keybindings, and workspace-specific settings.</li>
+        </ul>
+      </article>
+
+      <article class="card span-5">
+        <h2>Core Areas</h2>
+        <ul>
+          <li><strong>Explorer:</strong> browse and manage files.</li>
+          <li><strong>Editor:</strong> tabs, split views, code actions.</li>
+          <li><strong>Source Control:</strong> stage/commit, diffs, branches.</li>
+          <li><strong>Run & Debug:</strong> breakpoints, watch, call stack.</li>
+          <li><strong>Extensions:</strong> add language servers, tools, themes.</li>
+        </ul>
+        <p class="note">
+          Tip: Keep a project in a single folder and use a workspace file only when you need multi-root setups.
+        </p>
+      </article>
+
+      <article class="card span-6">
+        <h2>Handy Shortcuts (Windows)</h2>
+        <table aria-label="VS Code shortcuts table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Shortcut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Command Palette</td>
+              <td><span class="k">Ctrl</span> + <span class="k">Shift</span> + <span class="k">P</span></td>
+            </tr>
+            <tr>
+              <td>Quick Open (file search)</td>
+              <td><span class="k">Ctrl</span> + <span class="k">P</span></td>
+            </tr>
+            <tr>
+              <td>Toggle terminal</td>
+              <td><span class="k">Ctrl</span> + <span class="k">`</span></td>
+            </tr>
+            <tr>
+              <td>Format document</td>
+              <td><span class="k">Shift</span> + <span class="k">Alt</span> + <span class="k">F</span></td>
+            </tr>
+            <tr>
+              <td>Find / Replace</td>
+              <td><span class="k">Ctrl</span> + <span class="k">F</span> / <span class="k">Ctrl</span> + <span class="k">H</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card span-6">
+        <h2>Extensions Worth Knowing</h2>
+        <p>
+          VS Code ships with strong defaults, but extensions unlock language servers, formatting, linting, and tooling.
+        </p>
+        <ul>
+          <li><strong>Language support:</strong> Python, C#, Java, Go, Rust, etc.</li>
+          <li><strong>Formatting:</strong> Prettier (web), Black (Python), etc.</li>
+          <li><strong>Linting:</strong> ESLint (JS/TS), Pylint/Ruff (Python), etc.</li>
+          <li><strong>Remote:</strong> SSH, WSL, and Containers for consistent dev environments.</li>
+        </ul>
+        <p class="note">
+          Good practice: enable format-on-save and keep project settings in a repository (workspace settings).
+        </p>
+      </article>
+
+      <article class="card span-12">
+        <h2>Git in VS Code (in one minute)</h2>
+        <p>
+          The Source Control view shows file changes, lets you stage selected hunks, write commit messages, and view diffs.
+          For advanced workflows, you can still use the integrated terminal.
+        </p>
+        <ul>
+          <li>Stage changes, commit, and push without leaving the editor.</li>
+          <li>Use the timeline and inline blame (with Git extensions) to understand history.</li>
+          <li>Review pull requests with extensions when you need code review inside VS Code.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <div class="card">
+      <p>
+        Created on <time datetime="2026-01-20">January 20, 2026</time>. VS Code is developed by Microsoft and has a large open ecosystem.
+      </p>
+      <p>
+        Next idea: add a small section about your favorite theme, font, and keybindings.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
