@@ -1,0 +1,56 @@
+.delete-modal {
+  max-width: 480px;
+}
+
+.delete-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.warning-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.delete-message {
+  font-size: 16px;
+  color: var(--color-text);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.delete-message strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.delete-warning {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 640px) {
+  .delete-modal-body {
+    padding: 20px;
+  }
+
+  .warning-icon {
+    font-size: 40px;
+  }
+
+  .delete-message {
+    font-size: 15px;
+  }
+}

@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ToastProvider } from './components/Toast'
+import { TasksPage } from './pages/TasksPage'
 import './App.css'
 
 const queryClient = new QueryClient({
@@ -13,10 +15,11 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="app">
-        <h1>TODO App</h1>
-        <p>Personal Task Management Application</p>
-      </div>
+      <ToastProvider>
+        <div className="app">
+          <TasksPage />
+        </div>
+      </ToastProvider>
     </QueryClientProvider>
   )
 }

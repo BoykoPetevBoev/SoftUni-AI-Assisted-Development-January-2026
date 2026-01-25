@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
+import taskRoutes from './routes/task.routes';
 
 // Load environment variables
 dotenv.config();
@@ -23,7 +24,10 @@ app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'TODO App API is running' });
 });
 
-// Error handling middleware
+// API Routes
+app.use('/api/tasks', taskRoutes);
+
+// Error handling middleware (must be last)
 app.use(errorHandler);
 
 // Start server
