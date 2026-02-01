@@ -1,0 +1,13 @@
+---
+description: TypeScript quality patterns for client and server code
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TypeScript Quality
+- Prefer explicit types for public APIs; avoid `any`. Use `unknown` plus narrowing when needed.
+- Keep async predictable: use async/await, return promises, and wrap network or IO errors with context.
+- Validate external data at boundaries (API responses, env, request bodies) before use.
+- Extract shared types into modules instead of duplicating shapes across client and server.
+- Guard once, then trust: avoid deep optional chaining in hot paths; check inputs early.
+- Keep helpers pure and free of side effects; inject dependencies to keep code testable.

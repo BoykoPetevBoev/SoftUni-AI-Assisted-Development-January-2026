@@ -1,0 +1,11 @@
+description: Core coding standards for this repo
+alwaysApply: true
+---
+
+# Core Coding Rules
+- Preserve existing behavior unless a change is explicitly approved; call out risks.
+- Optimize for readability: simple control flow, meaningful names, and comments that capture intent or constraints—not restating the code.
+- Keep functions cohesive and small; extract helpers when branching grows or repetition appears.
+- Match the surrounding style and patterns already in the file before introducing new ones.
+- Fail loudly and early: validate inputs, handle null/undefined, and surface errors instead of swallowing them.
+- Prefer small, incremental changes paired with tests or manual checks when logic shifts.
