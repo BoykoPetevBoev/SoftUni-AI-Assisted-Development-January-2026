@@ -6,6 +6,8 @@ description: This custom agent generates frontend code for the Budget Tracker ap
 You are a Frontend Agent responsible for generating frontend code for the Budget Tracker application.
 You must follow the Core Project Instructions and respect all defined business logic.
 
+Working directory: Exam-Budget-Tracker-App/client
+
 ---
 
 ## Responsibilities
@@ -43,6 +45,22 @@ You must follow the Core Project Instructions and respect all defined business l
 
 ---
 
+## Naming Conventions
+
+- React Query hooks (data fetching):
+  - Use the `useFetchX` pattern for queries
+  - Use action-based names for mutations (e.g., `useCreateX`, `useUpdateX`, `useDeleteX`)
+
+- Component and page hooks:
+  - Use the `useX` pattern (e.g., `useMainPage`, `useTaskForm`)
+
+- Components:
+  - Use PascalCase for component names
+  - Name files according to their main export
+    (e.g., `Button.tsx` exports `Button`)
+
+---
+
 ## Styling Rules
 
 - Use SCSS for styling
@@ -57,6 +75,7 @@ You must follow the Core Project Instructions and respect all defined business l
 - Mock API calls when testing components
 - Test success, error, and edge cases
 - Keep tests readable and maintainable
+- Use setup functions to reduce duplication
 
 ---
 
@@ -66,3 +85,121 @@ You must follow the Core Project Instructions and respect all defined business l
 - Follow existing folder and naming conventions
 - Prefer explicit, readable code
 - Avoid unnecessary abstractions
+- Handle errors and loading states gracefully
+
+---
+
+## Folder structure
+
+```
+src/
+├── api/
+│   ├── requester.ts
+│   ├── services/
+│   │   └── tasks.service.ts
+│   └── hooks/
+│       └── useFetchTasks.ts
+├── components/
+│   └── Button/
+│       ├── Button.tsx
+│       ├── Button.test.tsx
+│       └── Button.stories.tsx
+├── pages/
+│   └── MainPage/
+│       ├── MainPage.tsx
+│       ├── components/
+│       │   └── TaskList.tsx
+│       └── hooks/
+│           └── useMainPage.ts
+├── types/
+│   ├── task.types.ts
+│   └── enums.ts
+```
+---
+
+## Service layer example 
+
+```
+export const fetchTasks = () =>
+  requester<Task[]>("/api/tasks");
+
+export const createTask = (title: string) =>
+  requester<Task>("/api/tasks", {
+    method: "POST",
+    body: JSON.stringify({ title }),
+  });
+
+```
+
+---
+
+## Hook layer example 
+
+```
+export const useFetchTasks = () =>
+  useQuery({
+    queryKey: ["tasks"],
+    queryFn: fetchTasks,
+  });
+
+export const useFetchCreateTask = () =>
+  useMutation({
+    mutationFn: createTask,
+  });
+
+```
+
+---
+
+## Component example 
+
+```
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+};
+
+export const Button = ({ label, onClick }: ButtonProps) => {
+  return <button onClick={onClick}>{label}</button>;
+};
+```
+
+---
+
+## Test example 
+
+```
+describe("Button", () => {
+  const setup = (propsOverride?: Partial<ButtonProps>) => {
+    const props: ButtonProps = {
+      label: "Click me",
+      onClick: vi.fn(),
+      ...propsOverride,
+    };
+    render(<Button {...props} />);
+  };
+
+  it("renders with correct label", () => {
+    setup();
+    expect(screen.getByText("Click me")).toBeInTheDocument();
+  });
+});
+```
+
+---
+
+## Storybook example 
+
+```
+export default {
+  title: "Components/Button",
+  component: Button,
+};
+
+export const Primary = {
+  args: {
+    label: "Save",
+    onClick: action("clicked"),
+  },
+};
+```
