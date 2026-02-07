@@ -5,19 +5,18 @@ TASK:
 Set up the frontend for the Budget Tracker application. inside Exam-Budget-Tracker-App client folder
 
 TECH STACK:
-
 React (Vite)
 TypeScript
 SCSS
-DEPENDENCIES TO INSTALL:
 
+DEPENDENCIES TO INSTALL:
 @tanstack/react-query
 react-hook-form
 zod
 vitest
 react testing library
-SETUP REQUIREMENTS:
 
+SETUP REQUIREMENTS:
 Create a new React project using Vite with TypeScript
 Configure SCSS support
 Install and configure all required dependencies
@@ -27,8 +26,8 @@ pages/
 hooks/
 services/
 Configure basic project scripts (dev, build, test)
-VERIFICATION:
 
+VERIFICATION:
 Project builds successfully
 Development server starts without errors
 Vitest run without errors
