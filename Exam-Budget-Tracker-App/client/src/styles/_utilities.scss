@@ -1,0 +1,338 @@
+// ============================================================================
+// Reusable SCSS Utilities and Helpers
+// ============================================================================
+// Utility classes and common patterns used across components
+
+@import './variables';
+
+// ============================================================================
+// Layout Utilities
+// ============================================================================
+
+.container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+
+  @include respond-to('sm') {
+    padding: 0 $container-padding-mobile;
+  }
+}
+
+.flex {
+  display: flex;
+
+  &--center {
+    @include flex-center;
+  }
+
+  &--column {
+    @include flex-column;
+  }
+
+  &--between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &--gap-sm {
+    gap: $spacing-sm;
+  }
+
+  &--gap-md {
+    gap: $spacing-md;
+  }
+
+  &--gap-lg {
+    gap: $spacing-lg;
+  }
+
+  &--gap-xl {
+    gap: $spacing-xl;
+  }
+}
+
+.grid {
+  display: grid;
+
+  &--cols-1 {
+    grid-template-columns: 1fr;
+  }
+
+  &--cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &--auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  &--gap-sm {
+    gap: $spacing-sm;
+  }
+
+  &--gap-md {
+    gap: $spacing-md;
+  }
+
+  &--gap-lg {
+    gap: $spacing-lg;
+  }
+
+  &--gap-xl {
+    gap: $spacing-xl;
+  }
+}
+
+// ============================================================================
+// Spacing Utilities
+// ============================================================================
+
+.m {
+  &-0 { margin: 0; }
+  &-xs { margin: $spacing-xs; }
+  &-sm { margin: $spacing-sm; }
+  &-md { margin: $spacing-md; }
+  &-lg { margin: $spacing-lg; }
+  &-xl { margin: $spacing-xl; }
+  &-2xl { margin: $spacing-2xl; }
+  &-3xl { margin: $spacing-3xl; }
+}
+
+.mt {
+  &-0 { margin-top: 0; }
+  &-xs { margin-top: $spacing-xs; }
+  &-sm { margin-top: $spacing-sm; }
+  &-md { margin-top: $spacing-md; }
+  &-lg { margin-top: $spacing-lg; }
+  &-xl { margin-top: $spacing-xl; }
+  &-2xl { margin-top: $spacing-2xl; }
+  &-3xl { margin-top: $spacing-3xl; }
+}
+
+.mb {
+  &-0 { margin-bottom: 0; }
+  &-xs { margin-bottom: $spacing-xs; }
+  &-sm { margin-bottom: $spacing-sm; }
+  &-md { margin-bottom: $spacing-md; }
+  &-lg { margin-bottom: $spacing-lg; }
+  &-xl { margin-bottom: $spacing-xl; }
+  &-2xl { margin-bottom: $spacing-2xl; }
+  &-3xl { margin-bottom: $spacing-3xl; }
+}
+
+.p {
+  &-0 { padding: 0; }
+  &-xs { padding: $spacing-xs; }
+  &-sm { padding: $spacing-sm; }
+  &-md { padding: $spacing-md; }
+  &-lg { padding: $spacing-lg; }
+  &-xl { padding: $spacing-xl; }
+  &-2xl { padding: $spacing-2xl; }
+  &-3xl { padding: $spacing-3xl; }
+}
+
+.px {
+  &-sm { padding-left: $spacing-sm; padding-right: $spacing-sm; }
+  &-md { padding-left: $spacing-md; padding-right: $spacing-md; }
+  &-lg { padding-left: $spacing-lg; padding-right: $spacing-lg; }
+  &-xl { padding-left: $spacing-xl; padding-right: $spacing-xl; }
+}
+
+.py {
+  &-sm { padding-top: $spacing-sm; padding-bottom: $spacing-sm; }
+  &-md { padding-top: $spacing-md; padding-bottom: $spacing-md; }
+  &-lg { padding-top: $spacing-lg; padding-bottom: $spacing-lg; }
+  &-xl { padding-top: $spacing-xl; padding-bottom: $spacing-xl; }
+}
+
+// ============================================================================
+// Typography Utilities
+// ============================================================================
+
+.text {
+  &-xs { font-size: $font-size-xs; }
+  &-sm { font-size: $font-size-sm; }
+  &-base { font-size: $font-size-base; }
+  &-md { font-size: $font-size-md; }
+  &-lg { font-size: $font-size-lg; }
+  &-xl { font-size: $font-size-xl; }
+  &-2xl { font-size: $font-size-2xl; }
+  &-3xl { font-size: $font-size-3xl; }
+
+  &--primary { color: $color-text-primary; }
+  &--secondary { color: $color-text-secondary; }
+  &--tertiary { color: $color-text-tertiary; }
+  &--success { color: $color-success; }
+  &--error { color: $color-error; }
+  &--warning { color: $color-warning; }
+  &--info { color: $color-info; }
+
+  &--center { text-align: center; }
+  &--left { text-align: left; }
+  &--right { text-align: right; }
+
+  &--normal { font-weight: $font-weight-normal; }
+  &--medium { font-weight: $font-weight-medium; }
+  &--semibold { font-weight: $font-weight-semibold; }
+  &--bold { font-weight: $font-weight-bold; }
+
+  &--truncate { @include truncate; }
+}
+
+// ============================================================================
+// Background Utilities
+// ============================================================================
+
+.bg {
+  &--primary { background-color: $color-bg-primary; }
+  &--secondary { background-color: $color-bg-secondary; }
+  &--tertiary { background-color: $color-bg-tertiary; }
+  &--success { background-color: $color-success; }
+  &--error { background-color: $color-error; }
+  &--warning { background-color: $color-warning; }
+  &--info { background-color: $color-info; }
+}
+
+// ============================================================================
+// Border Utilities
+// ============================================================================
+
+.border {
+  border: 1px solid $color-border-default;
+
+  &--light { border-color: $color-border-light; }
+  &--default { border-color: $color-border-default; }
+  &--dark { border-color: $color-border-dark; }
+
+  &-t { border-top: 1px solid $color-border-light; }
+  &-r { border-right: 1px solid $color-border-light; }
+  &-b { border-bottom: 1px solid $color-border-light; }
+  &-l { border-left: 1px solid $color-border-light; }
+
+  &-none { border: none; }
+}
+
+.rounded {
+  &--sm { border-radius: $border-radius-sm; }
+  &--md { border-radius: $border-radius-md; }
+  &--lg { border-radius: $border-radius-lg; }
+  &--xl { border-radius: $border-radius-xl; }
+  &--full { border-radius: $border-radius-full; }
+}
+
+// ============================================================================
+// Shadow Utilities
+// ============================================================================
+
+.shadow {
+  &--sm { box-shadow: $shadow-sm; }
+  &--md { box-shadow: $shadow-md; }
+  &--lg { box-shadow: $shadow-lg; }
+  &--none { box-shadow: none; }
+}
+
+// ============================================================================
+// Card Styles
+// ============================================================================
+
+.card {
+  background: $color-bg-primary;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-sm;
+
+  &--elevated {
+    box-shadow: $shadow-md;
+  }
+
+  &--flat {
+    box-shadow: none;
+    border: 1px solid $color-border-light;
+  }
+}
+
+// ============================================================================
+// Display Utilities
+// ============================================================================
+
+.hidden { display: none; }
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.flex { display: flex; }
+.flex-inline { display: inline-flex; }
+
+// ============================================================================
+// Opacity Utilities
+// ============================================================================
+
+.opacity {
+  &-50 { opacity: 0.5; }
+  &-75 { opacity: 0.75; }
+  &-100 { opacity: 1; }
+}
+
+// ============================================================================
+// Common Patterns
+// ============================================================================
+
+// Centered container
+.page-center {
+  min-height: 100vh;
+  @include flex-center;
+  padding: $spacing-lg;
+}
+
+// Header with container
+.header-fixed {
+  background: $color-bg-primary;
+  box-shadow: $shadow-sm;
+  padding: $spacing-lg 0;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+// Loading spinner
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin $transition-slower $transition-linear infinite;
+}
+
+.spinner--large {
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid $color-border-light;
+  border-top-color: $color-primary;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Smooth transitions
+.transition {
+  &--fast { @include smooth-transition(all $transition-fast); }
+  &--base { @include smooth-transition(all $transition-base); }
+  &--slow { @include smooth-transition(all $transition-slow); }
+}
+
+// Focus ring (accessibility)
+.focus-ring {
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

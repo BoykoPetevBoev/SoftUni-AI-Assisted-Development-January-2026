@@ -1,38 +1,82 @@
-.btn {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+@import '../styles/variables';
 
+// ============================================================================
+// Button Component Styles - Luxury Dark Theme
+// ============================================================================
+
+.btn {
+  padding: $spacing-md $spacing-lg;
+  border: 1px solid transparent;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  @include smooth-transition(all);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  font-family: $font-family-base;
+
+  // Hover and active states
   &:hover:not(:disabled) {
     opacity: 0.9;
     transform: translateY(-2px);
   }
 
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  // Disabled state
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
+  // Focus state
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  // Primary variant (Gold luxury)
   &.btn-primary {
-    background-color: #646cff;
-    color: white;
+    background: linear-gradient(135deg, #d4af37 0%, #e8c547 100%);
+    color: #0a0e27;
+    border-color: #d4af37;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 
     &:hover:not(:disabled) {
-      background-color: #535bf2;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
     }
   }
 
+  // Secondary variant (Emerald)
   &.btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #ddd;
+    background: $color-secondary;
+    color: $color-bg-primary;
+    border: 1px solid $color-secondary;
 
     &:hover:not(:disabled) {
-      background-color: #e0e0e0;
+      background: $color-secondary-hover;
+      border-color: $color-secondary-hover;
     }
+  }
+
+  // Outline variant (Gold border)
+  &.btn-outline {
+    background: transparent;
+    border: 1px solid $color-primary;
+    color: $color-primary;
+
+    &:hover:not(:disabled) {
+      background: $color-primary-light;
+    }
+  }
+
+  // Full width variant
+  &.btn-full {
+    width: 100%;
   }
 }

@@ -1,0 +1,183 @@
+// ============================================================================
+// Design System Variables
+// ============================================================================
+// Colors, typography, spacing, and other design tokens
+
+// Color Palette - Modern Luxury Dark Theme
+// Primary brand colors (Gold luxury accent)
+$color-primary: #d4af37;
+$color-primary-hover: #e8c547;
+$color-primary-light: rgba(212, 175, 55, 0.15);
+
+// Secondary colors (Emerald green for prosperity)
+$color-secondary: #2ecc71;
+$color-secondary-hover: #27ae60;
+$color-secondary-light: rgba(46, 204, 113, 0.15);
+
+// Neutral colors (dark mode palette)
+$color-text-primary: #e8eef7;
+$color-text-secondary: #9ca3af;
+$color-text-tertiary: #6b7280;
+
+// Semantic colors (adjusted for dark theme)
+$color-success: #10b981;
+$color-error: #ff6b6b;
+$color-warning: #fbbf24;
+$color-info: #60a5fa;
+
+// Background colors (luxury dark)
+$color-bg-primary: #0a0e27;
+$color-bg-secondary: #141829;
+$color-bg-tertiary: #1a1f3a;
+$color-bg-card: #1a1f3a;
+$color-bg-hover: #252e4a;
+
+// Border colors (dark theme borders)
+$color-border-light: #2a3550;
+$color-border-default: #3a4560;
+$color-border-dark: #4a5570;
+$color-border-accent: #d4af37;
+
+// Text colors for dark mode
+$color-dark-bg: #0a0e27;
+$color-dark-text: #e8eef7;
+
+// Gradients (luxury gold and emerald)
+$gradient-luxury: linear-gradient(135deg, #d4af37 0%, #2ecc71 100%);
+$gradient-dark-hero: linear-gradient(135deg, #1a1f3a 0%, #141829 100%);
+$gradient-gold-accent: linear-gradient(135deg, #d4af37 0%, #e8c547 100%);
+
+// Glassmorphism effect colors
+$color-glass-bg: rgba(26, 31, 58, 0.7);
+$color-glass-border: rgba(212, 175, 55, 0.2);
+
+// Typography
+$font-family-base: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+// Font sizes
+$font-size-xs: 0.75rem;    // 12px
+$font-size-sm: 0.875rem;   // 14px
+$font-size-base: 1rem;     // 16px
+$font-size-md: 1.125rem;   // 18px
+$font-size-lg: 1.25rem;    // 20px
+$font-size-xl: 1.5rem;     // 24px
+$font-size-2xl: 2rem;      // 32px
+$font-size-3xl: 2.5rem;    // 40px
+$font-size-4xl: 3.2rem;    // 51px
+
+// Font weights
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Line heights
+$line-height-tight: 1.1;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// Spacing
+$spacing-xs: 0.25rem;     // 4px
+$spacing-sm: 0.5rem;      // 8px
+$spacing-md: 0.75rem;     // 12px
+$spacing-lg: 1rem;        // 16px
+$spacing-xl: 1.5rem;      // 24px
+$spacing-2xl: 2rem;       // 32px
+$spacing-3xl: 3rem;       // 48px
+
+// Border radius
+$border-radius-sm: 0.25rem;
+$border-radius-md: 0.5rem;
+$border-radius-lg: 0.75rem;
+$border-radius-xl: 1rem;
+$border-radius-full: 9999px;
+
+// Box shadows
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+// Transitions
+$transition-fast: 0.1s;
+$transition-base: 0.2s;
+$transition-slow: 0.3s;
+$transition-slower: 0.6s;
+$transition-ease: ease;
+$transition-ease-out: ease-out;
+$transition-ease-in-out: ease-in-out;
+$transition-linear: linear;
+
+// Z-index
+$z-index-dropdown: 100;
+$z-index-sticky: 500;
+$z-index-fixed: 1000;
+$z-index-toast: 9999;
+
+// Layout
+$container-max-width: 1200px;
+$container-padding: 1.5rem;
+$container-padding-mobile: 1rem;
+
+// Breakpoints
+$breakpoint-xs: 320px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+
+// ============================================================================
+// Mixins
+// ============================================================================
+
+// Responsive breakpoints
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media (max-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == 'md' {
+    @media (max-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == 'lg' {
+    @media (max-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == 'xl' {
+    @media (max-width: $breakpoint-xl) {
+      @content;
+    }
+  }
+}
+
+// Flexbox centering
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Flexbox column
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Truncate text
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Focus styles (accessible)
+@mixin focus-ring {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+  border-radius: $border-radius-sm;
+}
+
+// Smooth transitions
+@mixin smooth-transition($properties...) {
+  transition: $properties $transition-base $transition-ease;
+}
