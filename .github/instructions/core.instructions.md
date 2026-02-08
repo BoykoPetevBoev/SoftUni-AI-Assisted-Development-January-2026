@@ -67,3 +67,10 @@ Users can create income and expense transactions and organize them using custom 
 - Write clean and maintainable code
 - Avoid inline comments unless the logic is non-obvious
 - Ensure proper separation of concerns (e.g., UI logic vs business logic)
+
+---
+
+## 5. Verification Criteria
+- Code compiles without errors
+- All tests pass successfully
+- Functionality works as expected according to business rules

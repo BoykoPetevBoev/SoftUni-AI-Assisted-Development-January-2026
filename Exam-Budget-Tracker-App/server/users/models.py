@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class User(AbstractUser):
@@ -25,3 +26,16 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class TokenBlacklist(models.Model):
+    token = models.TextField()
+    blacklisted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'token_blacklist'
+        indexes = [
+            models.Index(fields=['token']),
+        ]
+
+    def __str__(self):
+        return f"Token blacklisted at {self.blacklisted_at}"

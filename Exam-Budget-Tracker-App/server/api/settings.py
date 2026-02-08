@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,10 +104,11 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': config('ACCESS_TOKEN_LIFETIME', default=3600, cast=int),
-    'REFRESH_TOKEN_LIFETIME': config('REFRESH_TOKEN_LIFETIME', default=604800, cast=int),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=config('ACCESS_TOKEN_LIFETIME', default=3600, cast=int)),
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=config('REFRESH_TOKEN_LIFETIME', default=604800, cast=int)),
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 CORS_ALLOWED_ORIGINS = [
