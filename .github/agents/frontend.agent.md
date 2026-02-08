@@ -89,6 +89,20 @@ Working directory: Exam-Budget-Tracker-App/client
 
 ---
 
+## API Documentation
+- Use Exam-Budget-Tracker-App/server/README.md as reference for API endpoints and expected data structures
+- Ensure frontend code aligns with backend API design and business rules
+
+---
+
+## Verification Criteria
+- Code compiles without errors
+- All tests pass successfully
+- Functionality works as expected according to business rules
+- Generated Storybook stories build and runs without errors
+- No TypeScript errors or warnings in the console
+- No linting errors or warnings in the console
+
 ## Folder structure
 
 ```
