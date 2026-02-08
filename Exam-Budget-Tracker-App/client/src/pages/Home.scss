@@ -1,159 +1,257 @@
+@import '../styles/variables';
+
+// ============================================================================
+// Home Page Styles - Luxury Dark Theme with Modern Design
+// ============================================================================
+
 .home-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: linear-gradient(180deg, #0a0e27 0%, #141829 50%, #0a0e27 100%);
+  padding-bottom: $spacing-3xl;
 }
 
+// ============================================================================
+// Header
+// ============================================================================
+
 .home-header {
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 1rem 0;
+  background: $color-glass-bg;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid $color-glass-border;
+  padding: $spacing-xl 0;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .home-container {
-  max-width: 1200px;
+  max-width: $container-max-width;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 $container-padding;
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @include respond-to('sm') {
+    padding: 0 $container-padding-mobile;
+  }
 }
 
+// Logo/site title
 .home-logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #646cff;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  background: $gradient-gold-accent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  letter-spacing: -0.5px;
 }
+
+// ============================================================================
+// Main Content
+// ============================================================================
 
 .home-main {
-  padding: 3rem 0;
+  padding: $spacing-3xl $container-padding;
+
+  @include respond-to('sm') {
+    padding: $spacing-2xl $container-padding-mobile;
+  }
+
+  .home-container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    display: block;
+  }
 }
 
+// ============================================================================
+// Welcome Section
+// ============================================================================
+
 .welcome-section {
-  margin-bottom: 2rem;
+  margin-bottom: $spacing-3xl;
 }
 
 .welcome-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  background: $gradient-gold-accent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 $spacing-md 0;
+  letter-spacing: -1px;
+
+  @include respond-to('md') {
+    font-size: $font-size-3xl;
+  }
 }
 
 .welcome-text {
-  font-size: 1.125rem;
-  color: #6b7280;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
   margin: 0;
+  max-width: 500px;
 }
 
-.user-info-card {
-  background: #fff;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-}
+// ============================================================================
+// Stats Grid
+// ============================================================================
 
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 1rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-xl;
+  margin-bottom: $spacing-3xl;
 
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f3f4f6;
-
-  &:last-child {
-    border-bottom: none;
+  @include respond-to('md') {
+    grid-template-columns: 1fr;
   }
 }
 
-.info-label {
-  font-weight: 500;
-  color: #6b7280;
-}
-
-.info-value {
-  color: #1f2937;
-  font-weight: 500;
-}
-
-.placeholder-section {
-  margin-top: 3rem;
-}
-
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
-}
-
-.section-text {
-  color: #6b7280;
-  margin: 0 0 2rem 0;
-}
-
-.placeholder-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.placeholder-card {
-  background: #fff;
-  border-radius: 0.75rem;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+// Stat card (balance, income, expenses)
+.stat-card {
+  background: $color-glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $color-glass-border;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  position: relative;
+  overflow: hidden;
+  @include smooth-transition(all);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.1);
   }
 
-  h4 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 1rem 0 0.5rem 0;
+  // Decorative background glow
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
   }
 
-  p {
-    color: #6b7280;
-    margin: 0;
-    font-size: 0.875rem;
+  // Balance card special styling
+  &.stat-card--primary {
+    border-color: rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(46, 204, 113, 0.05) 100%);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+
+    .stat-label {
+      color: $color-primary;
+    }
+  }
+
+  &.stat-card--success {
+    border-color: rgba(46, 204, 113, 0.3);
+
+    .stat-label {
+      color: $color-secondary;
+    }
+  }
+
+  &.stat-card--error {
+    border-color: rgba(255, 107, 107, 0.3);
+
+    .stat-label {
+      color: $color-error;
+    }
   }
 }
 
-.placeholder-icon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+.stat-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: $color-text-secondary;
+  margin: 0 0 $spacing-md 0;
 }
 
-.btn {
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
-  border: none;
+.stat-value {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  letter-spacing: -1px;
+}
+
+.stat-change {
+  font-size: $font-size-sm;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-border-light;
+
+  &.positive {
+    color: $color-secondary;
+  }
+
+  &.negative {
+    color: $color-error;
+  }
+}
+
+// ============================================================================
+// Quick Actions
+// ============================================================================
+
+.quick-actions {
+  margin-bottom: $spacing-3xl;
+}
+
+.quick-actions-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0 0 $spacing-lg 0;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-md;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('sm') {
+    grid-template-columns: 1fr;
+  }
+}
+
+.action-button {
+  padding: $spacing-lg;
+  background: $color-glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $color-glass-border;
+  border-radius: $border-radius-lg;
+  color: $color-text-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  display: inline-flex;
+  @include smooth-transition(all);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  gap: $spacing-md;
 
-  &:focus {
-    outline: 2px solid #646cff;
-    outline-offset: 2px;
+  &:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
   }
 
   &:active {
@@ -161,52 +259,183 @@
   }
 }
 
-.btn-outline {
-  background: transparent;
-  border: 1px solid #646cff;
-  color: #646cff;
+.action-icon {
+  font-size: $font-size-4xl;
+}
 
-  &:hover {
-    background: #646cff;
-    color: #fff;
+// ============================================================================
+// User Info Card
+// ============================================================================
+
+.user-info-card {
+  background: $color-glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $color-glass-border;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-3xl;
+}
+
+.card-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0 0 $spacing-lg 0;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid $color-border-light;
+}
+
+// Info row for key-value pairs
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $color-border-light;
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  gap: 1rem;
+.info-label {
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.info-value {
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+// ============================================================================
+// Placeholder Section
+// ============================================================================
+
+.placeholder-section {
+  margin-top: $spacing-3xl;
+}
+
+.section-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0 0 $spacing-md 0;
+}
+
+.section-text {
+  color: $color-text-secondary;
+  margin: 0 0 $spacing-2xl 0;
+}
+
+// Placeholder grid
+.placeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-xl;
+
+  @include respond-to('md') {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Individual placeholder card
+.placeholder-card {
+  background: $color-glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $color-glass-border;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl * 1.25;
+  text-align: center;
+  @include smooth-transition(all);
+
+  &:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+  }
+
+  h4 {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin: $spacing-lg 0 $spacing-sm 0;
+  }
 
   p {
-    color: #6b7280;
-    font-size: 1rem;
+    color: $color-text-secondary;
+    margin: 0;
+    font-size: $font-size-sm;
+  }
+}
+
+.placeholder-icon {
+  font-size: $font-size-4xl;
+  margin-bottom: $spacing-sm;
+}
+
+// Button styles
+.btn {
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-border-light;
+  cursor: pointer;
+  @include smooth-transition(all);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid $color-primary;
+  color: $color-primary;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-light;
+  }
+}
+
+// Loading container
+.loading-container {
+  @include flex-center;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: $spacing-lg;
+
+  p {
+    color: $color-text-secondary;
+    font-size: $font-size-base;
   }
 }
 
 .spinner-large {
   width: 3rem;
   height: 3rem;
-  border: 4px solid #e5e7eb;
-  border-top-color: #646cff;
+  border: 4px solid $color-border-light;
+  border-top-color: $color-primary;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin $transition-slower $transition-linear infinite;
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 768px) {
-  .welcome-title {
-    font-size: 2rem;
-  }
-
-  .placeholder-grid {
-    grid-template-columns: 1fr;
   }
 }

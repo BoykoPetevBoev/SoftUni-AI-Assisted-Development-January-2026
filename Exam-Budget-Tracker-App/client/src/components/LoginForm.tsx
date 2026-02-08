@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
-import { ApiError } from '../api/requester';
+import { handleApiFormError } from '../utils/formErrorHandler';
 import './LoginForm.scss';
 
 const loginSchema = z.object({
@@ -46,22 +46,7 @@ export const LoginForm: React.FC = () => {
       showSuccess('Login successful!');
       navigate('/');
     } catch (err) {
-      if (err instanceof ApiError) {
-        const errorData = err.data as Record<string, string[] | string>;
-        if (errorData.username) {
-          setError('username', { message: Array.isArray(errorData.username) ? errorData.username[0] : errorData.username });
-        }
-        if (errorData.password) {
-          setError('password', { message: Array.isArray(errorData.password) ? errorData.password[0] : errorData.password });
-        }
-        if (errorData.detail) {
-          showError(typeof errorData.detail === 'string' ? errorData.detail : errorData.detail[0]);
-        } else if (errorData.non_field_errors) {
-          showError(Array.isArray(errorData.non_field_errors) ? errorData.non_field_errors[0] : errorData.non_field_errors);
-        }
-      } else {
-        showError('An unexpected error occurred');
-      }
+      handleApiFormError(err, setError, showError);
     } finally {
       setIsLoading(false);
     }

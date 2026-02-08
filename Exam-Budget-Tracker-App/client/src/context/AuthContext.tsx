@@ -88,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (err: unknown) {
       // Even if logout fails on server, clear local tokens
-      console.error('Logout error:', err);
+      // Error is silently handled as logout should succeed locally
     } finally {
       clearTokens();
     }

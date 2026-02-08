@@ -1,76 +1,130 @@
+@import '../styles/variables';
+
+// ============================================================================
+// Login Page Styles - Luxury Dark Theme
+// ============================================================================
+
 .login-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 1rem;
+  background: linear-gradient(135deg, #0a0e27 0%, #141829 50%, #1a1f3a 100%);
+  padding: $spacing-lg;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative background elements
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 8s ease-in-out infinite reverse;
+  }
 }
 
+// Login card container with glassmorphism
 .login-card {
-  background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 2.5rem;
+  background: $color-glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $color-glass-border;
+  border-radius: $border-radius-xl;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: $spacing-2xl $spacing-xl * 1.25;
   width: 100%;
   max-width: 450px;
+  position: relative;
+  z-index: 10;
+
+  @include respond-to('sm') {
+    padding: $spacing-xl;
+  }
 }
 
+// Card header
 .login-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: $spacing-2xl;
 }
 
+// Title with gradient
 .login-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  background: $gradient-gold-accent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 $spacing-sm 0;
+
+  @include respond-to('sm') {
+    font-size: $font-size-xl;
+  }
 }
 
+// Subtitle
 .login-subtitle {
-  font-size: 1rem;
-  color: #6b7280;
+  font-size: $font-size-base;
+  color: $color-text-secondary;
   margin: 0;
 }
 
+// Card footer
 .login-footer {
-  margin-top: 1.5rem;
+  margin-top: $spacing-xl;
   text-align: center;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  padding-top: $spacing-xl;
+  border-top: 1px solid $color-border-light;
 }
 
+// Footer text
 .login-footer-text {
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
   margin: 0;
 }
 
+// Register link
 .login-link {
-  color: #646cff;
+  color: $color-primary;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: $font-weight-medium;
+  @include smooth-transition(color);
 
   &:hover {
-    color: #535bf2;
+    color: $color-primary-hover;
     text-decoration: underline;
   }
 
-  &:focus {
-    outline: 2px solid #646cff;
-    outline-offset: 2px;
-    border-radius: 0.25rem;
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
-@media (max-width: 640px) {
-  .login-card {
-    padding: 1.5rem;
+// Animations
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
   }
-
-  .login-title {
-    font-size: 1.5rem;
+  50% {
+    transform: translateY(20px);
   }
 }

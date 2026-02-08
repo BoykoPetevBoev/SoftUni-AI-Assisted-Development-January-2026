@@ -1,53 +1,71 @@
+@import '../styles/variables';
+
+// ============================================================================
+// Register Form Component Styles
+// ============================================================================
+
 .register-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  @include flex-column;
+  gap: $spacing-xl;
   width: 100%;
 }
 
+// Form group (wrapper for label + input)
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include flex-column;
+  gap: $spacing-sm;
 }
 
+// Labels
 .form-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+// Input fields with dark background
 .form-input {
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  background: #fff;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-base;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-md;
+  @include smooth-transition(border-color, box-shadow, background-color);
+  background: rgba(26, 31, 58, 0.5);
   width: 100%;
+  font-family: $font-family-base;
+  color: $color-text-primary;
+
+  &::placeholder {
+    color: $color-text-tertiary;
+  }
 
   &:focus {
     outline: none;
-    border-color: #646cff;
-    box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.1);
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), inset 0 0 0 1px rgba(212, 175, 55, 0.1);
+    background: rgba(26, 31, 58, 0.8);
   }
 
   &:disabled {
-    background: #f3f4f6;
+    background: rgba(20, 24, 41, 0.5);
     cursor: not-allowed;
     opacity: 0.6;
   }
 
+  // Error state
   &.form-input--error {
-    border-color: #ef4444;
+    border-color: $color-error;
 
     &:focus {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      border-color: $color-error;
+      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2), inset 0 0 0 1px rgba(255, 107, 107, 0.1);
     }
   }
 }
 
+// Password input wrapper for toggle button
 .password-input-wrapper {
   position: relative;
   display: flex;
@@ -58,50 +76,55 @@
   }
 }
 
+// Password visibility toggle button
 .password-toggle {
   position: absolute;
-  right: 0.75rem;
+  right: $spacing-lg;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.25rem;
-  padding: 0.25rem;
-  color: #6b7280;
-  transition: color 0.2s;
+  font-size: $font-size-lg;
+  padding: $spacing-xs;
+  color: $color-text-secondary;
+  @include smooth-transition(color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    color: #374151;
+    color: $color-text-primary;
   }
 
-  &:focus {
-    outline: 2px solid #646cff;
-    outline-offset: 2px;
-    border-radius: 0.25rem;
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
   }
 }
 
+// Error message
 .form-error {
-  font-size: 0.875rem;
-  color: #ef4444;
-  margin-top: -0.25rem;
+  font-size: $font-size-sm;
+  color: $color-error;
+  margin-top: -$spacing-sm;
 }
 
+// Submit button
 .btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 0.5rem;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  border-radius: $border-radius-md;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  @include smooth-transition(all);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: $spacing-sm;
 
-  &:focus {
-    outline: 2px solid #646cff;
-    outline-offset: 2px;
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
   }
 
   &:active {
@@ -116,11 +139,12 @@
 }
 
 .btn-primary {
-  background: #646cff;
-  color: #fff;
+  background: linear-gradient(135deg, #d4af37 0%, #e8c547 100%);
+  color: #0a0e27;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 
   &:hover:not(:disabled) {
-    background: #535bf2;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
   }
 }
 
@@ -128,13 +152,14 @@
   width: 100%;
 }
 
+// Loading spinner
 .spinner {
   width: 1rem;
   height: 1rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border-top-color: $color-bg-primary;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: spin $transition-slower $transition-linear infinite;
 }
 
 @keyframes spin {

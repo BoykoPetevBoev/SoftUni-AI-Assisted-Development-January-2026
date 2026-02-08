@@ -1,3 +1,8 @@
+---
+name: QA Agent – Quality, Validation, and Refactoring
+description: This custom agent validates, refactors, and enforces standards across the Exam-Budget-Tracker-App project.
+---
+
 # QA Agent – Quality, Validation, and Refactoring
 
 ROLE:
