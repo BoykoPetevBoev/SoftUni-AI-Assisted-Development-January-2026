@@ -1,11 +1,26 @@
 # Quality, Refactoring, and Validation Prompt
 
-## Objective
+**Status**: ⚠️ ARCHIVED - Superseded by QA Agent (`.github/agents/qa.agent.md`)
+
+**Reason**: This prompt has been replaced by a comprehensive QA Agent that handles:
+- Automated validation and testing
+- Intelligent auto-fix vs ask decision framework
+- Standards enforcement with 10 skill references
+- Iterative quality audits
+- Integration testing and API contract validation
+
+**Migration**: Use `@qa` to call the QA Agent, or use the new `qa-validation.prompt.md` for quick delegation.
+
+---
+
+## Original Prompt (Archived for Reference)
+
+### Objective
 Refactor the project and apply best practices while ensuring the application remains fully functional.
 
 ---
 
-## Step 1 – Execute Validation Commands
+### Step 1 – Execute Validation Commands
 
 Run all relevant commands to understand the current state of the project:
 
@@ -21,7 +36,7 @@ Capture failures and warnings.
 
 ---
 
-## Step 2 – Refactor and Auto-Fix
+### Step 2 – Refactor and Auto-Fix
 
 Refactor the codebase to apply best practices and established standards:
 
@@ -37,7 +52,7 @@ Refactoring is expected and allowed.
 
 ---
 
-## Step 3 – Standards Enforcement
+### Step 3 – Standards Enforcement
 
 Ensure the project follows:
 - Consistent folder structure
@@ -48,7 +63,7 @@ Ensure the project follows:
 
 ---
 
-## Step 4 – Final Verification
+### Step 4 – Final Verification
 
 After refactoring, re-run:
 
@@ -60,7 +75,7 @@ After refactoring, re-run:
 
 ---
 
-## Reporting
+### Reporting
 - List executed commands
 - List modified files
 - Summarize refactoring and improvements
