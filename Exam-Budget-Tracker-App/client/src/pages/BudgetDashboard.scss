@@ -1,0 +1,25 @@
+@import '../styles/variables';
+
+.budget-dashboard {
+  min-height: 100vh;
+  background: $gradient-dark-hero;
+  padding: $spacing-2xl $spacing-lg;
+
+  &__container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .budget-dashboard {
+    padding: $spacing-xl $spacing-md;
+  }
+}
+
+@media (max-width: 640px) {
+  .budget-dashboard {
+    padding: $spacing-lg $spacing-sm;
+  }
+}

@@ -40,7 +40,7 @@ Users can create income and expense transactions and organize them using custom 
 
 ## 3. Core Business Logic
 
-- Each user has exactly one main budget
+- Each user has many budgets
 - Transactions belong to a budget
 - Transactions have:
   - amount

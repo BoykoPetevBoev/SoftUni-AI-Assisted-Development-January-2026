@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import './Home.scss';
@@ -14,7 +14,7 @@ export const Home: React.FC = () => {
       await logout();
       showSuccess('Logged out successfully');
       navigate('/login');
-    } catch (error) {
+    } catch {
       // Logout errors are handled in AuthContext
     }
   };
@@ -28,7 +28,13 @@ export const Home: React.FC = () => {
     <div className="home-page">
       <header className="home-header">
         <div className="home-container">
-          <h1 className="home-logo">💰 Budget Tracker</h1>
+          <div className="home-header__content">
+            <h1 className="home-logo">💰 Budget Tracker</h1>
+            <nav className="home-nav">
+              <Link to="/" className="home-nav__link home-nav__link--active">Home</Link>
+              <Link to="/budgets" className="home-nav__link">Budgets</Link>
+            </nav>
+          </div>
           <button onClick={handleLogout} className="btn btn-outline">
             Logout
           </button>

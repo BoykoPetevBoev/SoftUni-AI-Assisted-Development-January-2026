@@ -274,6 +274,380 @@ Authorization: Bearer <access_token>
 
 ---
 
+## Budget Management
+
+### 6. List User's Budgets
+
+Retrieve all budgets owned by the authenticated user with pagination.
+
+| Property | Value |
+|----------|-------|
+| **Method** | `GET` |
+| **URL** | `/budgets/` |
+| **Auth Required** | Yes |
+| **Status Code** | `200 OK` |
+| **Note** | Returns only budgets owned by the authenticated user |
+
+#### Request Headers
+
+```
+Authorization: Bearer <access_token>
+```
+
+#### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | integer | Page number (default: 1) |
+
+#### Response (200 OK)
+
+```json
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": 1,
+      "title": "Monthly Budget",
+      "description": "My monthly budget for expenses",
+      "date": "2026-02-15",
+      "initial_amount": "5000.00",
+      "created_at": "2026-02-15T20:32:00Z",
+      "updated_at": "2026-02-15T20:32:00Z"
+    },
+    {
+      "id": 2,
+      "user": 1,
+      "title": "Quarterly Budget",
+      "description": "Q1 budget planning",
+      "date": "2026-01-01",
+      "initial_amount": "15000.00",
+      "created_at": "2026-02-10T15:20:00Z",
+      "updated_at": "2026-02-10T15:20:00Z"
+    }
+  ]
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized** - Missing or invalid token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
+### 7. Create Budget
+
+Create a new budget for the authenticated user. User is automatically set to the authenticated user.
+
+| Property | Value |
+|----------|-------|
+| **Method** | `POST` |
+| **URL** | `/budgets/` |
+| **Auth Required** | Yes |
+| **Status Code** | `201 Created` |
+| **Note** | User field is auto-set; cannot be changed |
+
+#### Request Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+#### Request Body
+
+```json
+{
+  "title": "Monthly Budget",
+  "description": "My monthly budget for expenses",
+  "date": "2026-02-15",
+  "initial_amount": "5000.00"
+}
+```
+
+#### Response (201 Created)
+
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "Monthly Budget",
+  "description": "My monthly budget for expenses",
+  "date": "2026-02-15",
+  "initial_amount": "5000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T20:32:00Z"
+}
+```
+
+#### Error Responses
+
+**400 Bad Request** - Validation failed
+
+```json
+{
+  "title": ["Title is required."],
+  "initial_amount": ["Initial amount must be greater than 0."]
+}
+```
+
+**401 Unauthorized** - Missing or invalid token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
+### 8. Retrieve Budget
+
+Retrieve a single budget by ID. User can only access their own budgets.
+
+| Property | Value |
+|----------|-------|
+| **Method** | `GET` |
+| **URL** | `/budgets/{id}/` |
+| **Auth Required** | Yes |
+| **Status Code** | `200 OK` |
+| **Note** | Returns 404 if budget doesn't exist or belongs to another user |
+
+#### Request Headers
+
+```
+Authorization: Bearer <access_token>
+```
+
+#### Response (200 OK)
+
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "Monthly Budget",
+  "description": "My monthly budget for expenses",
+  "date": "2026-02-15",
+  "initial_amount": "5000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T20:32:00Z"
+}
+```
+
+#### Error Responses
+
+**404 Not Found** - Budget not found or belongs to another user
+
+```json
+{
+  "detail": "Not found."
+}
+```
+
+**401 Unauthorized** - Missing or invalid token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
+### 9. Update Budget (Full)
+
+Update all fields of a budget. User cannot change budget ownership.
+
+| Property | Value |
+|----------|-------|
+| **Method** | `PUT` |
+| **URL** | `/budgets/{id}/` |
+| **Auth Required** | Yes |
+| **Status Code** | `200 OK` |
+| **Note** | User field is preserved; cannot be changed |
+
+#### Request Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+#### Request Body
+
+```json
+{
+  "title": "Updated Monthly Budget",
+  "description": "Updated description",
+  "date": "2026-03-15",
+  "initial_amount": "6000.00"
+}
+```
+
+#### Response (200 OK)
+
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "Updated Monthly Budget",
+  "description": "Updated description",
+  "date": "2026-03-15",
+  "initial_amount": "6000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T21:45:00Z"
+}
+```
+
+#### Error Responses
+
+**400 Bad Request** - Validation failed
+
+```json
+{
+  "title": ["Title must be at most 255 characters."]
+}
+```
+
+**404 Not Found** - Budget not found or belongs to another user
+
+```json
+{
+  "detail": "Not found."
+}
+```
+
+**401 Unauthorized** - Missing or invalid token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
+### 10. Update Budget (Partial)
+
+Update specific fields of a budget. User cannot change budget ownership.
+
+| Property | Value |
+|----------|-------|
+| **Method** | `PATCH` |
+| **URL** | `/budgets/{id}/` |
+| **Auth Required** | Yes |
+| **Status Code** | `200 OK` |
+| **Note** | Only include fields you want to update |
+
+#### Request Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+#### Request Body
+
+```json
+{
+  "title": "New Budget Title"
+}
+```
+
+#### Response (200 OK)
+
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "New Budget Title",
+  "description": "My monthly budget for expenses",
+  "date": "2026-02-15",
+  "initial_amount": "5000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T21:50:00Z"
+}
+```
+
+#### Error Responses
+
+**400 Bad Request** - Validation failed
+
+```json
+{
+  "initial_amount": ["Initial amount must be greater than 0."]
+}
+```
+
+**404 Not Found** - Budget not found or belongs to another user
+
+```json
+{
+  "detail": "Not found."
+}
+```
+
+**401 Unauthorized** - Missing or invalid token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
+### 11. Delete Budget
+
+Delete a budget owned by the authenticated user.
+
+| Property | Value |
+|----------|-------|
+| **Method** | `DELETE` |
+| **URL** | `/budgets/{id}/` |
+| **Auth Required** | Yes |
+| **Status Code** | `204 No Content` |
+| **Note** | Returns 404 if budget doesn't exist or belongs to another user |
+
+#### Request Headers
+
+```
+Authorization: Bearer <access_token>
+```
+
+#### Response (204 No Content)
+
+No response body.
+
+#### Error Responses
+
+**404 Not Found** - Budget not found or belongs to another user
+
+```json
+{
+  "detail": "Not found."
+}
+```
+
+**401 Unauthorized** - Missing or invalid token
+
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+
+---
+
 ## Authentication Flow
 
 ### 1. Register New User
@@ -475,6 +849,150 @@ curl -X POST http://localhost:8000/api/users/logout/ \
     "refresh_token": "<refresh_token>"
   }'
 ```
+
+---
+
+## Example: Complete Budget Operations (cURL)
+
+### 1. Create a Budget
+
+```bash
+curl -X POST http://localhost:8000/api/budgets/ \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Monthly Budget",
+    "description": "My monthly budget for expenses",
+    "date": "2026-02-15",
+    "initial_amount": "5000.00"
+  }'
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "Monthly Budget",
+  "description": "My monthly budget for expenses",
+  "date": "2026-02-15",
+  "initial_amount": "5000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T20:32:00Z"
+}
+```
+
+### 2. List All Budgets
+
+```bash
+curl -X GET http://localhost:8000/api/budgets/ \
+  -H "Authorization: Bearer <access_token>"
+```
+
+**Response (200 OK):**
+```json
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": 1,
+      "title": "Monthly Budget",
+      "description": "My monthly budget for expenses",
+      "date": "2026-02-15",
+      "initial_amount": "5000.00",
+      "created_at": "2026-02-15T20:32:00Z",
+      "updated_at": "2026-02-15T20:32:00Z"
+    }
+  ]
+}
+```
+
+### 3. Retrieve Single Budget
+
+```bash
+curl -X GET http://localhost:8000/api/budgets/1/ \
+  -H "Authorization: Bearer <access_token>"
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "Monthly Budget",
+  "description": "My monthly budget for expenses",
+  "date": "2026-02-15",
+  "initial_amount": "5000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T20:32:00Z"
+}
+```
+
+### 4. Update Budget (Full)
+
+```bash
+curl -X PUT http://localhost:8000/api/budgets/1/ \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated Monthly Budget",
+    "description": "Updated description",
+    "date": "2026-03-15",
+    "initial_amount": "6000.00"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "Updated Monthly Budget",
+  "description": "Updated description",
+  "date": "2026-03-15",
+  "initial_amount": "6000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T21:45:00Z"
+}
+```
+
+### 5. Update Budget (Partial)
+
+```bash
+curl -X PATCH http://localhost:8000/api/budgets/1/ \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "New Budget Title"
+  }'
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "title": "New Budget Title",
+  "description": "Updated description",
+  "date": "2026-03-15",
+  "initial_amount": "6000.00",
+  "created_at": "2026-02-15T20:32:00Z",
+  "updated_at": "2026-02-15T21:50:00Z"
+}
+```
+
+### 6. Delete Budget
+
+```bash
+curl -X DELETE http://localhost:8000/api/budgets/1/ \
+  -H "Authorization: Bearer <access_token>"
+```
+
+**Response (204 No Content):**
+No response body.
 
 ---
 

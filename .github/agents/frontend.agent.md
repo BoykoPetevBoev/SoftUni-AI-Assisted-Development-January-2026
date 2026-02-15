@@ -3,7 +3,16 @@ name: frontend-agent–budget-tracker
 description: Build React components, pages, and features for the Budget Tracker application
 argument-hint: Describe the component, page, or feature to build
 target: vscode
-tools: ['read', 'search', 'execute/getTerminalOutput', 'execute/testFailure', 'agent']
+tools: [
+  'read',
+  'search',
+  'search/changes',
+  'search/codebase',
+  'edit',
+  'execute/getTerminalOutput',
+  'execute/testFailure',
+  'agent'
+]
 agents: ['qa']
 handoffs:
   - label: Run QA Validation
