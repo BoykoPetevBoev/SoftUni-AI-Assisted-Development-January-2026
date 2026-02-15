@@ -15,11 +15,112 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Concepts
 
-### 1. Basic Test Structure
+### Test File Structure
 
-**File Naming**: `ComponentName.test.tsx`
+- **File Naming**: `ComponentName.test.tsx`
+- Use `describe()` for component grouping
+- Use `it()` or `test()` for individual test cases
+- Always use `screen` queries (not destructured from render)
+
+### Query Priority (Use in This Order)
+
+1. **✅ BEST**: Accessible queries (role/label) - `getByRole('button')`, `getByLabelText('Email')`
+2. **✅ GOOD**: Semantic queries - `getByPlaceholderText()`, `getByText()`
+3. **⚠️ LAST RESORT**: Test IDs (only when above don't work) - `getByTestId()`
+4. **❌ NEVER**: Class names or implementation details - Don't use `querySelector`
+
+### User Interactions
+
+- Always use `userEvent.setup()` before interactions
+- Use `await` with all user interactions
+- Use `vi.fn()` for mock functions
+
+### Async Testing
+
+- Use `waitFor()` for async updates
+- Use `findBy` queries (they wait automatically): `await screen.findByText('loaded')`
+- Use `queryBy` to assert element doesn't exist (won't error if missing)
+
+### Context & Providers
+
+- Provide helper function to render components with required providers
+- Wrap components with necessary context (AuthProvider, ThemeProvider, etc.)
+- Test both authenticated and unauthenticated scenarios
+
+---
+
+## Test Quality Checklist
+
+- [ ] **File named correctly**: `ComponentName.test.tsx`
+- [ ] **Describes component**: `describe('ComponentName', () => {})`
+- [ ] **Uses accessible queries**: `getByRole`, `getByLabelText` (not class names)
+- [ ] **Tests user behavior**: What user sees/does (not implementation)
+- [ ] **Async handled properly**: `await user.click()`, `waitFor()`, `findBy`
+- [ ] **Mocks are setup**: Use `vi.fn()` for callbacks, mock fetch/API
+- [ ] **Happy path tested**: Default/successful behavior works
+- [ ] **Error cases tested**: Validation errors, API failures
+- [ ] **Edge cases covered**: Empty states, loading states, disabled states
+- [ ] **Cleanup done**: `beforeEach(() => vi.clearAllMocks())`
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Test implementation details  
+✅ **Do**: Test user-visible behavior
+
+❌ **Don't**: Use `querySelector` or class names  
+✅ **Do**: Use `getByRole`, `getByLabelText`
+
+❌ **Don't**: Forget `await` with user interactions  
+✅ **Do**: Always `await user.click()`, `await user.type()`
+
+❌ **Don't**: Test internal state directly  
+✅ **Do**: Test what user sees after state changes
+
+❌ **Don't**: Write tests that depend on each other  
+✅ **Do**: Make each test independent
+
+---
+
+## Commands
+
+### Run Tests
+```bash
+npm test
+```
+
+### Run in Watch Mode
+```bash
+npm test -- --watch
+```
+
+### Run with Coverage
+```bash
+npm test -- --coverage
+```
+
+### Update Snapshots
+```bash
+npm test -- -u
+```
+
+---
+
+## References
+
+- **Existing Tests**: See `src/components/Button.test.tsx`, `LoginForm.test.tsx`
+- **React Testing Library**: https://testing-library.com/docs/react-testing-library/intro
+- **Vitest**: https://vitest.dev/
+- **User Event**: https://testing-library.com/docs/user-event/intro
+
+---
+
+# CODE EXAMPLES
+
+### Basic Test Structure (Good Example)
 
 ```typescript
 import { render, screen } from '@testing-library/react';
@@ -34,14 +135,7 @@ describe('Button', () => {
 });
 ```
 
-**Key Rules**:
-- Use `describe()` for component grouping
-- Use `it()` or `test()` for individual test cases
-- Always use `screen` queries (not destructured from render)
-
----
-
-### 2. Query Priority (Use in This Order)
+### Query Priority Examples
 
 ```typescript
 // 1. ✅ BEST: Accessible to everyone (use role/label)
@@ -59,9 +153,7 @@ screen.getByTestId('custom-element');
 // Don't use: getByClassName, querySelector
 ```
 
----
-
-### 3. User Interactions
+### User Interactions (Good Examples)
 
 ```typescript
 import { render, screen } from '@testing-library/react';
@@ -94,14 +186,7 @@ describe('Button interactions', () => {
 });
 ```
 
-**Key Rules**:
-- Always use `userEvent.setup()` before interactions
-- Use `await` with all user interactions
-- Use `vi.fn()` for mock functions
-
----
-
-### 4. Testing Forms
+### Form Testing (Good Examples)
 
 ```typescript
 import { render, screen } from '@testing-library/react';
@@ -143,9 +228,7 @@ describe('LoginForm', () => {
 });
 ```
 
----
-
-### 5. Testing Async Behavior
+### Async Testing (Good Examples)
 
 ```typescript
 import { render, screen, waitFor } from '@testing-library/react';
@@ -182,14 +265,7 @@ describe('UserProfile async', () => {
 });
 ```
 
-**Key Rules**:
-- Use `waitFor()` for async updates
-- Use `findBy` queries (they wait automatically): `await screen.findByText('loaded')`
-- Use `queryBy` to assert element doesn't exist
-
----
-
-### 6. Mocking API Calls
+### Mocking API Calls (Good Example)
 
 ```typescript
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -215,9 +291,7 @@ describe('Component with API', () => {
 });
 ```
 
----
-
-### 7. Testing Context/Providers
+### Testing Context/Providers (Good Example)
 
 ```typescript
 import { render, screen } from '@testing-library/react';
@@ -244,26 +318,9 @@ describe('Component with context', () => {
 });
 ```
 
----
+### Common Test Patterns (Good Examples)
 
-## Test Quality Checklist
-
-- [ ] **File named correctly**: `ComponentName.test.tsx`
-- [ ] **Describes component**: `describe('ComponentName', () => {})`
-- [ ] **Uses accessible queries**: `getByRole`, `getByLabelText` (not class names)
-- [ ] **Tests user behavior**: What user sees/does (not implementation)
-- [ ] **Async handled properly**: `await user.click()`, `waitFor()`, `findBy`
-- [ ] **Mocks are setup**: Use `vi.fn()` for callbacks, mock fetch/API
-- [ ] **Happy path tested**: Default/successful behavior works
-- [ ] **Error cases tested**: Validation errors, API failures
-- [ ] **Edge cases covered**: Empty states, loading states, disabled states
-- [ ] **Cleanup done**: `beforeEach(() => vi.clearAllMocks())`
-
----
-
-## Common Test Patterns
-
-### Test Component Renders
+**Test Component Renders**
 ```typescript
 it('renders without crashing', () => {
   render(<Button>Click</Button>);
@@ -271,7 +328,7 @@ it('renders without crashing', () => {
 });
 ```
 
-### Test Props
+**Test Props**
 ```typescript
 it('applies variant prop', () => {
   render(<Button variant="primary">Click</Button>);
@@ -279,7 +336,7 @@ it('applies variant prop', () => {
 });
 ```
 
-### Test Conditional Rendering
+**Test Conditional Rendering**
 ```typescript
 it('shows loading spinner when isLoading is true', () => {
   render(<Button isLoading>Submit</Button>);
@@ -288,7 +345,7 @@ it('shows loading spinner when isLoading is true', () => {
 });
 ```
 
-### Test Disabled State
+**Test Disabled State**
 ```typescript
 it('disables button when disabled prop is true', () => {
   render(<Button disabled>Click</Button>);
@@ -296,35 +353,9 @@ it('disables button when disabled prop is true', () => {
 });
 ```
 
----
+### Quality Standards: Good vs Bad Tests
 
-## Commands
-
-### Run Tests
-```bash
-npm test
-```
-
-### Run in Watch Mode
-```bash
-npm test -- --watch
-```
-
-### Run with Coverage
-```bash
-npm test -- --coverage
-```
-
-### Update Snapshots
-```bash
-npm test -- -u
-```
-
----
-
-## Quality Standards
-
-### ✅ Good Test
+**✅ Good Test**
 ```typescript
 it('submits form with valid credentials', async () => {
   const handleSubmit = vi.fn();
@@ -349,7 +380,7 @@ it('submits form with valid credentials', async () => {
 - Has clear assertion
 - Async properly handled
 
-### ❌ Bad Test
+**❌ Bad Test**
 ```typescript
 it('works', () => {
   const wrapper = render(<LoginForm />);
@@ -362,31 +393,3 @@ it('works', () => {
 - Uses querySelector (implementation detail)
 - No actual behavior tested
 - Missing user interactions
-
----
-
-## Anti-Patterns
-
-❌ **Don't**: Test implementation details  
-✅ **Do**: Test user-visible behavior
-
-❌ **Don't**: Use `querySelector` or class names  
-✅ **Do**: Use `getByRole`, `getByLabelText`
-
-❌ **Don't**: Forget `await` with user interactions  
-✅ **Do**: Always `await user.click()`, `await user.type()`
-
-❌ **Don't**: Test internal state directly  
-✅ **Do**: Test what user sees after state changes
-
-❌ **Don't**: Write tests that depend on each other  
-✅ **Do**: Make each test independent
-
----
-
-## References
-
-- **Existing Tests**: See `src/components/Button.test.tsx`, `LoginForm.test.tsx`
-- **React Testing Library**: https://testing-library.com/docs/react-testing-library/intro
-- **Vitest**: https://vitest.dev/
-- **User Event**: https://testing-library.com/docs/user-event/intro

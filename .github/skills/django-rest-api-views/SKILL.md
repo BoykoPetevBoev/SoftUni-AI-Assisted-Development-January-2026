@@ -16,9 +16,93 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Patterns Overview
 
-### 1. Basic ViewSet (CRUD)
+**Basic ViewSet (CRUD)**: Use ModelViewSet to automatically generate list, create, retrieve, update, and delete endpoints. Override `get_queryset()` to scope data by user. Use `permission_classes` for access control. This pattern saves boilerplate for standard CRUD operations.
+
+**Custom Actions**: Use the `@action` decorator to create custom endpoints. Use `detail=False` for list actions (no object), `detail=True` for single object actions. Override `permission_classes` on specific actions for public endpoints. Custom actions return proper HTTP status codes.
+
+**Permissions & Access Control**: Create custom permission classes by inheriting from BasePermission. Implement `has_object_permission()` for per-object checks. Use built-in permissions (AllowAny, IsAuthenticated, IsAdminUser). Always filter querysets to user data in `get_queryset()`.
+
+**Pagination**: Use PageNumberPagination for standard page-based pagination. Define page_size, page_size_query_param, and max_page_size. Apply pagination_class to ViewSet. Response includes count, next, previous, and results.
+
+**Different Serializers for Different Actions**: Override `get_serializer_class()` to return different serializers for list, retrieve, and other actions. Use lighter serializers for list (better performance), full serializers for detail.
+
+**Filtering & Search**: Use DjangoFilterBackend for field filtering. Use SearchFilter for full-text search. Use OrderingFilter for result ordering. Define filterset_fields, search_fields, and ordering_fields.
+
+---
+
+## Key Rules
+
+- Override get_queryset() for user scoping
+- Use permission_classes for access control
+- Use @action(detail=True) for single object actions
+- Use @action(detail=False) for list actions
+- Always perform_create() to set request.user
+- Return proper HTTP status codes
+- Use get_serializer_class() for action-specific serializers
+- Filter querysets at queryset level (not in view)
+- Use pagination for list endpoints
+- Add filtering, search, and ordering
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Return all objects regardless of user  
+✅ **Do**: Filter queryset by `request.user`
+
+❌ **Don't**: Use `AllowAny` for protected data  
+✅ **Do**: Use `IsAuthenticated` or custom permissions
+
+❌ **Don't**: Forget `perform_create()` to set request.user  
+✅ **Do**: Override `perform_create()` to auto-set user
+
+❌ **Don't**: Use string serializer classes  
+✅ **Do**: Import and use serializer classes directly
+
+❌ **Don't**: Overload ViewSet with complex logic  
+✅ **Do**: Move complexity to serializers/services
+
+---
+
+## Quality Checklist
+
+- [ ] **ViewSet created**: Extends ModelViewSet
+- [ ] **Queryset filtered**: User data scoped correctly
+- [ ] **Permissions applied**: IsAuthenticated on protected endpoints
+- [ ] **Custom actions**: Using @action decorator
+- [ ] **Serializer selection**: Different serializers per action if needed
+- [ ] **Error handling**: Returns proper HTTP status codes
+- [ ] **Pagination**: Applied to list endpoints
+- [ ] **Filtering/Search**: Available for list endpoints
+
+---
+
+## Commands
+
+```bash
+# Run view tests
+pytest api/users/test_views.py
+
+# Run specific test
+pytest api/users/test_views.py::TestUserViewSet::test_register
+```
+
+---
+
+## References
+
+- **Existing Views**: `users/views.py`
+- **Permissions**: https://www.django-rest-framework.org/api-guide/permissions/
+- **ViewSets**: https://www.django-rest-framework.org/api-guide/viewsets/
+- **Pagination**: https://www.django-rest-framework.org/api-guide/pagination/
+
+---
+
+# CODE EXAMPLES
+
+## 1. Basic ViewSet (CRUD)
 
 **File**: `api/users/views.py`
 
@@ -41,21 +125,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.filter(id=self.request.user.id)
 ```
 
-**HTTP Methods Provided**:
-- GET /users/ (list)
-- POST /users/ (create)
-- GET /users/{id}/ (retrieve)
-- PUT /users/{id}/ (update)
-- DELETE /users/{id}/ (destroy)
-
-**Key Rules**:
-- Override `get_queryset()` for user scoping
-- Use `permission_classes` for access control
-- Filter data at queryset level (not in view logic)
-
----
-
-### 2. Custom Actions
+## 2. Custom Actions
 
 ```python
 from rest_framework.decorators import action
@@ -92,15 +162,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 ```
 
-**Key Rules**:
-- Use `@action(detail=False)` for list actions (no object)
-- Use `@action(detail=True)` for single object actions
-- Override `permission_classes` for public actions
-- Return proper HTTP status codes
-
----
-
-### 3. Permissions & Access Control
+## 3. Permissions & Access Control - Good Example
 
 ```python
 from rest_framework.permissions import BasePermission, IsAuthenticated, AllowAny
@@ -128,14 +190,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 ```
 
-**Built-in Permissions**:
-- `AllowAny` - No authentication required
-- `IsAuthenticated` - Must be logged in
-- `IsAdminUser` - Must be staff/superuser
-
----
-
-### 4. Pagination
+## 4. Pagination
 
 ```python
 from rest_framework.pagination import PageNumberPagination
@@ -157,19 +212,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 # Usage: GET /transactions/?page=1&page_size=20
 ```
 
-**Response Format**:
-```json
-{
-  "count": 100,
-  "next": "http://api.example.com/transactions/?page=2",
-  "previous": null,
-  "results": [...]
-}
-```
-
----
-
-### 5. Different Serializers for Different Actions
+## 5. Different Serializers for Different Actions
 
 ```python
 class TransactionViewSet(viewsets.ModelViewSet):
@@ -189,9 +232,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return Transaction.objects.filter(user=self.request.user)
 ```
 
----
-
-### 6. Filtering, Searching, Ordering
+## 6. Filtering, Searching, Ordering
 
 ```python
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -218,24 +259,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
 # GET /transactions/?ordering=-amount
 ```
 
----
+## 7. Simple CRUD ViewSet
 
-## Quality Checklist
-
-- [ ] **ViewSet created**: Extends ModelViewSet
-- [ ] **Queryset filtered**: User data scoped correctly
-- [ ] **Permissions applied**: IsAuthenticated on protected endpoints
-- [ ] **Custom actions**: Using @action decorator
-- [ ] **Serializer selection**: Different serializers per action if needed
-- [ ] **Error handling**: Returns proper HTTP status codes
-- [ ] **Pagination**: Applied to list endpoints
-- [ ] **Filtering/Search**: Available for list endpoints
-
----
-
-## Common Patterns
-
-### Simple CRUD ViewSet
 ```python
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -243,7 +268,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 ```
 
-### User-Scoped Data
+## 8. User-Scoped Data
+
 ```python
 class BudgetViewSet(viewsets.ModelViewSet):
     serializer_class = BudgetSerializer
@@ -256,7 +282,8 @@ class BudgetViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 ```
 
-### Public + Private Actions
+## 9. Public + Private Actions
+
 ```python
 @action(detail=False, methods=['post'], permission_classes=[AllowAny])
 def login(self, request):
@@ -268,43 +295,3 @@ def my_data(self, request):
     # Private endpoint
     pass
 ```
-
----
-
-## Anti-Patterns
-
-❌ **Don't**: Return all objects regardless of user  
-✅ **Do**: Filter queryset by `request.user`
-
-❌ **Don't**: Use `AllowAny` for protected data  
-✅ **Do**: Use `IsAuthenticated` or custom permissions
-
-❌ **Don't**: Forget `perform_create()` to set request.user  
-✅ **Do**: Override `perform_create()` to auto-set user
-
-❌ **Don't**: Use string serializer classes  
-✅ **Do**: Import and use serializer classes directly
-
-❌ **Don't**: Overload ViewSet with complex logic  
-✅ **Do**: Move complexity to serializers/services
-
----
-
-## Commands
-
-```bash
-# Run view tests
-pytest api/users/test_views.py
-
-# Run specific test
-pytest api/users/test_views.py::TestUserViewSet::test_register
-```
-
----
-
-## References
-
-- **Existing Views**: `users/views.py`
-- **Permissions**: https://www.django-rest-framework.org/api-guide/permissions/
-- **ViewSets**: https://www.django-rest-framework.org/api-guide/viewsets/
-- **Pagination**: https://www.django-rest-framework.org/api-guide/pagination/

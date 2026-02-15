@@ -16,9 +16,139 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Patterns Overview
 
-### 1. Basic Form Setup
+Form development with React Hook Form and Zod encompasses several key patterns:
+
+**Basic Form Setup**: Define a Zod schema outside the component for reusability and testability. Integrate it with React Hook Form using `zodResolver`. Use `z.infer<typeof schema>` for TypeScript types. Display validation errors inline below inputs and disable the submit button while submitting.
+
+**Complex Validation**: Use `.regex()` for pattern validation, `.min()` and `.max()` for length validation, and `.refine()` for custom validation logic. For cross-field validation, use `.refine()` with the `path` property to direct the error to the correct field. Keep schemas separate from components for better organization.
+
+**Form with Default Values**: Use `defaultValues` when handling edit forms. Call `reset()` to update the form when data changes (e.g., after a fetch). Use `isDirty` to detect if the form has been modified. Use `z.coerce.number()` for number inputs to convert strings to numbers automatically. Mark optional fields with `.optional()`.
+
+**Error Handling**: Use `setError()` for programmatic field errors from API responses. Separate API errors from validation errors. Use `reset()` to clear forms after successful submission. Display API errors in a banner above the form with `role="alert"` for better accessibility.
+
+**Password Field Pattern**: Provide a toggle for show/hide password functionality. Use `aria-label` for accessibility. Optionally add a password strength indicator. Create this as a reusable component that integrates with React Hook Form's `register`.
+
+**Testing Forms**: Test validation errors, successful submissions, and loading states. Use `waitFor()` for async validation. Use `userEvent` instead of `fireEvent` for realistic interactions. Mock `onSubmit` handlers with `vi.fn()`.
+
+**Dynamic Fields**: Use `useFieldArray` from React Hook Form to manage arrays of fields. Always use `field.id` as the key (not index). Use `append()` to add new fields and `remove(index)` to remove them. Validate array length with `.min()` or `.max()`. Access nested errors with optional chaining: `errors.items?.[index]?.field`.
+
+---
+
+## Key Rules
+
+- Define Zod schema outside component (reusable, testable)
+- Use `zodResolver` to integrate Zod with React Hook Form
+- Use `z.infer<typeof schema>` for TypeScript types
+- Display validation errors inline below inputs
+- Disable submit button while `isSubmitting`
+- Use `setError()` for programmatic field errors
+- Separate API errors from validation errors
+- Use `reset()` to clear form after successful submission
+- Display API errors in banner with `role="alert"`
+- Use `defaultValues` for initial data in edit forms
+- Use `reset()` when data changes (e.g., after fetch)
+- Use `isDirty` to detect form modifications
+- Use `z.coerce.number()` for number inputs
+- Use `.optional()` for optional fields
+- Use `aria-label` for password visibility toggles
+- Test validation, successful submission, and loading states
+- Use `waitFor()` for async validation in tests
+- Use `field.id` as key for dynamic fields (not index)
+- Access nested errors with optional chaining
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Use uncontrolled forms without validation  
+✅ **Do**: Define Zod schema and use React Hook Form
+
+❌ **Don't**: Duplicate validation logic  
+✅ **Do**: Define validation once in Zod schema
+
+❌ **Don't**: Forget to handle loading states  
+✅ **Do**: Disable submit button while `isSubmitting`
+
+❌ **Don't**: Use inline styles for errors  
+✅ **Do**: Use CSS classes with semantic HTML and `role="alert"`
+
+❌ **Don't**: Define schemas inside components  
+✅ **Do**: Define schemas outside components for reusability
+
+❌ **Don't**: Validate again in submit handler  
+✅ **Do**: Trust Zod validation, just use `validated_data`
+
+❌ **Don't**: Mix API error handling with form validation  
+✅ **Do**: Separate API errors from validation errors
+
+---
+
+## Quality Checklist
+
+Before submitting a form implementation:
+
+- [ ] Zod schema defined with clear error messages
+- [ ] All fields have proper HTML labels linked with `htmlFor`
+- [ ] Validation errors display inline below inputs
+- [ ] Submit button disabled while `isSubmitting`
+- [ ] API errors handled and displayed to user
+- [ ] Form resets after successful submission (if appropriate)
+- [ ] Password fields have show/hide toggle
+- [ ] Required fields marked with `*` or "(required)" label
+- [ ] Form has proper TypeScript types from Zod schema
+- [ ] Form tested with valid and invalid inputs
+- [ ] Accessible: ARIA labels, error roles, keyboard navigation
+- [ ] Loading states communicated visually
+
+---
+
+## Common Zod Validators
+
+**String validators**:
+- `.min(length, message)` - Minimum length
+- `.max(length, message)` - Maximum length
+- `.email(message)` - Valid email format
+- `.url(message)` - Valid URL format
+- `.regex(pattern, message)` - Custom pattern
+- `.trim()` - Remove whitespace
+- `.toLowerCase()` - Convert to lowercase
+
+**Number validators**:
+- `.min(value, message)` - Minimum value
+- `.max(value, message)` - Maximum value
+- `.positive(message)` - Must be positive
+- `.int(message)` - Must be integer
+- `z.coerce.number()` - Convert string to number
+
+**Other types**:
+- `z.boolean()` - Boolean values
+- `z.date()` - Date objects
+- `z.string().datetime()` - ISO datetime strings
+- `z.coerce.date()` - Convert string to Date
+- `z.string().optional()` - Optional string
+- `z.string().nullable()` - Nullable string
+- `z.enum(['option1', 'option2'])` - Enum values
+
+**Advanced**:
+- `.refine((val) => condition, { message })` - Custom validation
+- `.discriminatedUnion('type', [...])` - Conditional validation
+- Cross-field validation with `.refine()` at schema level
+
+---
+
+## Resources
+
+- [React Hook Form Documentation](https://react-hook-form.com/)
+- [Zod Documentation](https://zod.dev/)
+- [Zod Resolver](https://github.com/react-hook-form/resolvers#zod)
+
+---
+
+# CODE EXAMPLES
+
+## 1. Basic Form Setup
 
 **File**: `src/components/LoginForm/LoginForm.tsx`
 
@@ -86,16 +216,7 @@ export const LoginForm = () => {
 };
 ```
 
-**Key Rules**:
-- Define Zod schema outside component (reusable, testable)
-- Use `zodResolver` to integrate with React Hook Form
-- Use `z.infer<typeof schema>` for TypeScript types
-- Display validation errors inline below inputs
-- Disable submit button while submitting
-
----
-
-### 2. Complex Validation Schema
+## 2. Complex Validation Schema
 
 **File**: `src/components/RegisterForm/schema.ts`
 
@@ -132,16 +253,7 @@ export const registerSchema = z.object({
 export type RegisterFormData = z.infer<typeof registerSchema>;
 ```
 
-**Key Rules**:
-- Use `.regex()` for pattern validation
-- Use `.min()` and `.max()` for length validation
-- Use `.refine()` for custom validation logic
-- Use `.refine()` with `path` for cross-field validation
-- Separate schema from component (easier testing)
-
----
-
-### 3. Form with Default Values
+## 3. Form with Default Values
 
 **File**: `src/components/ProfileForm/ProfileForm.tsx`
 
@@ -217,16 +329,7 @@ export const ProfileForm = ({ initialData, onSubmit }: ProfileFormProps) => {
 };
 ```
 
-**Key Rules**:
-- Use `defaultValues` for initial data (edit forms)
-- Use `reset()` to update form when data changes
-- Use `isDirty` to detect if form was modified
-- Use `z.coerce.number()` for number inputs (converts string to number)
-- Use `.optional()` for optional fields
-
----
-
-### 4. Form Error Handling
+## 4. Form Error Handling
 
 **File**: `src/components/TransactionForm/TransactionForm.tsx`
 
@@ -348,16 +451,7 @@ export const TransactionForm = () => {
 };
 ```
 
-**Key Rules**:
-- Use `setError()` for programmatic field errors (e.g., from API)
-- Separate API errors from validation errors
-- Use `reset()` to clear form after successful submission
-- Display API errors in banner above form
-- Use `role="alert"` for error banners (accessibility)
-
----
-
-### 5. Password Field Pattern
+## 5. Password Field Pattern
 
 **File**: `src/components/PasswordField/PasswordField.tsx`
 
@@ -438,16 +532,7 @@ export const PasswordField = ({
 />
 ```
 
-**Key Rules**:
-- Provide toggle for show/hide password
-- Use `aria-label` for accessibility
-- Optional password strength indicator
-- Reusable component pattern
-- Integrate with React Hook Form's `register`
-
----
-
-### 6. Testing Forms
+## 6. Testing Forms
 
 **File**: `src/components/LoginForm/LoginForm.test.tsx`
 
@@ -534,17 +619,7 @@ describe('LoginForm', () => {
 });
 ```
 
-**Key Rules**:
-- Test validation errors (required fields, format validation)
-- Test successful submission with valid data
-- Test loading states (disabled button, loading text)
-- Use `waitFor()` for async validation
-- Use `userEvent` for realistic interactions
-- Mock `onSubmit` handler with `vi.fn()`
-
----
-
-### 7. Form with Dynamic Fields
+## 7. Form with Dynamic Fields
 
 **File**: `src/components/ExpenseForm/ExpenseForm.tsx`
 
@@ -637,142 +712,3 @@ export const ExpenseForm = () => {
   );
 };
 ```
-
-**Key Rules**:
-- Use `useFieldArray` for dynamic fields
-- Use `field.id` as key (not index)
-- Use `append()` to add fields
-- Use `remove(index)` to remove fields
-- Validate array length with `.min()` or `.max()`
-- Access nested errors with `errors.items?.[index]?.field`
-
----
-
-## Anti-Patterns (❌ AVOID)
-
-### ❌ Don't use uncontrolled forms without validation
-```typescript
-// BAD - No validation, hard to test
-const BadForm = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    // No validation!
-  };
-  
-  return <form onSubmit={handleSubmit}>...</form>;
-};
-```
-
-### ❌ Don't duplicate validation logic
-```typescript
-// BAD - Validation in both frontend and submit handler
-const BadForm = () => {
-  const onSubmit = (data) => {
-    // Don't validate again here - Zod already did this
-    if (!data.email || !data.email.includes('@')) {
-      alert('Invalid email');
-      return;
-    }
-  };
-};
-```
-
-### ❌ Don't forget to handle loading states
-```typescript
-// BAD - No loading state, button can be clicked multiple times
-<button type="submit">Submit</button>
-
-// GOOD
-<button type="submit" disabled={isSubmitting}>
-  {isSubmitting ? 'Submitting...' : 'Submit'}
-</button>
-```
-
-### ❌ Don't use inline styles for errors
-```typescript
-// BAD - Inline styles, not accessible
-{errors.email && <span style={{ color: 'red' }}>{errors.email.message}</span>}
-
-// GOOD - CSS class, semantic HTML
-{errors.email && <span className="error" role="alert">{errors.email.message}</span>}
-```
-
----
-
-## Quality Checklist
-
-Before submitting a form implementation:
-
-- [ ] Zod schema defined with clear error messages
-- [ ] All fields have proper HTML labels linked with `htmlFor`
-- [ ] Validation errors display inline below inputs
-- [ ] Submit button disabled while `isSubmitting`
-- [ ] API errors handled and displayed to user
-- [ ] Form resets after successful submission (if appropriate)
-- [ ] Password fields have show/hide toggle
-- [ ] Required fields marked with `*` or "(required)" label
-- [ ] Form has proper TypeScript types from Zod schema
-- [ ] Form tested with valid and invalid inputs
-- [ ] Accessible: ARIA labels, error roles, keyboard navigation
-- [ ] Loading states communicated visually
-
----
-
-## Common Zod Validators
-
-```typescript
-// String
-z.string()
-  .min(3, 'Minimum 3 characters')
-  .max(50, 'Maximum 50 characters')
-  .email('Invalid email')
-  .url('Invalid URL')
-  .regex(/pattern/, 'Custom pattern message')
-  .trim() // Remove whitespace
-  .toLowerCase() // Convert to lowercase
-
-// Number
-z.number()
-  .min(0, 'Must be positive')
-  .max(100, 'Too large')
-  .positive('Must be positive')
-  .int('Must be integer')
-
-z.coerce.number() // Convert string to number (for input type="number")
-
-// Boolean
-z.boolean()
-
-// Date
-z.date()
-z.string().datetime() // ISO string
-z.coerce.date() // Convert string to Date
-
-// Optional/Nullable
-z.string().optional() // undefined | string
-z.string().nullable() // null | string
-z.string().nullish() // null | undefined | string
-
-// Enums
-z.enum(['option1', 'option2', 'option3'])
-
-// Custom validation
-z.string().refine((val) => val !== 'admin', {
-  message: 'Username cannot be "admin"',
-})
-
-// Conditional validation
-z.discriminatedUnion('type', [
-  z.object({ type: z.literal('email'), email: z.string().email() }),
-  z.object({ type: z.literal('phone'), phone: z.string() }),
-])
-```
-
----
-
-## Resources
-
-- [React Hook Form Documentation](https://react-hook-form.com/)
-- [Zod Documentation](https://zod.dev/)
-- [Zod Resolver](https://github.com/react-hook-form/resolvers#zod)

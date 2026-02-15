@@ -15,9 +15,119 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Patterns Overview
 
-### 1. Subcomponents Pattern
+**Subcomponents Pattern**: Instead of one large component, split into smaller focused parts. Attach subcomponents to the main component using dot notation. Each subcomponent handles a specific section (Header, Content, Footer). Subcomponents can accept props to receive data and callbacks from the parent.
+
+**Custom Hooks for Logic**: Extract business logic into custom hooks that manage state, validation, and actions. Custom hooks return an object with state and methods. Components use the hook and remain focused on rendering. This separation makes hooks testable independently.
+
+**Separation of Concerns**: Create pure presentational components that only handle UI rendering. Extract logic into custom hooks and container components. Container components manage state/logic and pass props to presentational components. This pattern makes components reusable and testable.
+
+**Compound Component Pattern**: Create a main component with multiple subcomponents that work together. Subcomponents are aware of the parent and can use context if needed. Users compose subcomponents in a flexible way. Examples: Modal (Header/Body/Footer), Tabs (TabList/TabPanel), etc.
+
+---
+
+## Key Rules
+
+- Components should have single responsibility
+- Subcomponents are logical groupings of related UI
+- Extract logic into custom hooks
+- Presentational components are pure (props in, JSX out)
+- Container components handle logic and state
+- Use TypeScript interfaces for all props
+- Avoid prop drilling (10+ levels deep)
+- Use context for deeply nested props
+- Make components easy to test
+- Reuse subcomponents where possible
+- Clean imports with barrel exports (index.ts)
+
+---
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── TransactionForm/
+│   │   ├── TransactionForm.tsx      # Main component with subcomponents
+│   │   ├── TransactionForm.test.tsx
+│   │   ├── TransactionForm.stories.tsx
+│   │   └── index.ts
+│   │
+│   ├── UserCard.tsx                 # Pure presentational component
+│   ├── UserCardContainer.tsx        # Container/logic component
+│   │
+│   └── Modal.tsx                    # Compound component
+│
+├── hooks/
+│   ├── useTransactionForm.ts        # Form state & validation
+│   ├── useDeleteUser.ts             # Delete mutation
+│   ├── useUser.ts                   # User query
+│   └── useToast.ts                  # Toast notifications
+│
+└── services/
+    └── userService.ts              # API calls
+```
+
+---
+
+## Quality Checklist
+
+- [ ] **Component has single responsibility**: One main purpose
+- [ ] **Subcomponents are logical**: Related parts grouped together
+- [ ] **Logic extracted to hooks**: Business logic separated from UI
+- [ ] **Props are clear**: TypeScript interfaces defined
+- [ ] **Component is testable**: Pure components are easy to test
+- [ ] **No prop drilling**: Use context if needed for deep nesting
+- [ ] **Reusable pieces**: Subcomponents can be used elsewhere
+- [ ] **Clean imports**: Use barrel exports (index.ts)
+
+---
+
+## Common Patterns
+
+### Simple Presentational Component
+A pure UI component that receives all data and callbacks as props.
+
+### Container Component (Smart)
+Handles logic and state, delegates rendering to presentational components.
+
+### Custom Hook Pattern
+Extract reusable logic that manages state and side effects.
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Put all logic in one 500-line component  
+✅ **Do**: Split into subcomponents and hooks
+
+❌ **Don't**: Pass 10+ props through multiple levels (prop drilling)  
+✅ **Do**: Use Context API or custom hooks
+
+❌ **Don't**: Mix UI logic with business logic  
+✅ **Do**: Separate into container (logic) and presentational (UI)
+
+❌ **Don't**: Duplicate logic across components  
+✅ **Do**: Extract to custom hooks
+
+❌ **Don't**: Create components that are hard to test  
+✅ **Do**: Make components pure and simple
+
+---
+
+## References
+
+- **Existing Components**: Review `src/components/LoginForm.tsx`, `Button.tsx`
+- **React Patterns**: https://react.dev/learn/passing-props-to-a-component
+- **Custom Hooks**: https://react.dev/learn/reusing-logic-with-custom-hooks
+- **Compound Components**: https://www.patterns.dev/posts/compound-pattern
+
+---
+
+# CODE EXAMPLES
+
+## 1. Subcomponents Pattern
 
 Instead of one large component, split into smaller focused parts:
 
@@ -74,15 +184,7 @@ TransactionForm.Footer = ({ onSubmit }) => (
 );
 ```
 
-**Benefits:**
-- ✅ Each part has single responsibility
-- ✅ Easier to test individual sections
-- ✅ Clear structure in JSX
-- ✅ Reusable subcomponents
-
----
-
-### 2. Custom Hooks for Logic
+## 2. Custom Hooks for Logic
 
 Extract business logic into custom hooks:
 
@@ -147,6 +249,7 @@ export const useTransactionForm = (onSuccess: () => void) => {
 ```
 
 **Usage**:
+
 ```typescript
 const MyForm = () => {
   const form = useTransactionForm(() => {
@@ -172,11 +275,10 @@ const MyForm = () => {
 };
 ```
 
----
-
-### 3. Separation of Concerns Example
+## 3. Separation of Concerns Example
 
 **Component (UI only)**:
+
 ```typescript
 // src/components/UserCard.tsx
 interface UserCardProps {
@@ -198,6 +300,7 @@ export const UserCard = ({ name, email, onDelete, isDeleting }: UserCardProps) =
 ```
 
 **Hook (Logic only)**:
+
 ```typescript
 // src/hooks/useDeleteUser.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -222,6 +325,7 @@ export const useDeleteUser = () => {
 ```
 
 **Container (Composition)**:
+
 ```typescript
 // src/components/UserCardContainer.tsx
 interface UserCardContainerProps {
@@ -245,14 +349,7 @@ export const UserCardContainer = ({ userId }: UserCardContainerProps) => {
 };
 ```
 
-**Benefits:**
-- ✅ `UserCard` is pure, testable, reusable
-- ✅ `useDeleteUser` is logic, testable independently
-- ✅ `UserCardContainer` composes them together
-
----
-
-### 4. Compound Component Pattern
+## 4. Compound Component Pattern
 
 ```typescript
 // Main component
@@ -289,52 +386,8 @@ Modal.Action = ({ onClick, children }: { onClick: () => void; children: React.Re
 </Modal>
 ```
 
----
+## 5. Simple Presentational Component
 
-## File Structure
-
-```
-src/
-├── components/
-│   ├── TransactionForm/
-│   │   ├── TransactionForm.tsx      # Main component with subcomponents
-│   │   ├── TransactionForm.test.tsx
-│   │   ├── TransactionForm.stories.tsx
-│   │   └── index.ts
-│   │
-│   ├── UserCard.tsx                 # Pure presentational component
-│   ├── UserCardContainer.tsx        # Container/logic component
-│   │
-│   └── Modal.tsx                    # Compound component
-│
-├── hooks/
-│   ├── useTransactionForm.ts        # Form state & validation
-│   ├── useDeleteUser.ts             # Delete mutation
-│   ├── useUser.ts                   # User query
-│   └── useToast.ts                  # Toast notifications
-│
-└── services/
-    └── userService.ts              # API calls
-```
-
----
-
-## Quality Checklist
-
-- [ ] **Component has single responsibility**: One main purpose
-- [ ] **Subcomponents are logical**: Related parts grouped together
-- [ ] **Logic extracted to hooks**: Business logic separated from UI
-- [ ] **Props are clear**: TypeScript interfaces defined
-- [ ] **Component is testable**: Pure components are easy to test
-- [ ] **No prop drilling**: Use context if needed for deep nesting
-- [ ] **Reusable pieces**: Subcomponents can be used elsewhere
-- [ ] **Clean imports**: Use barrel exports (index.ts)
-
----
-
-## Common Patterns
-
-### Simple Presentational Component
 ```typescript
 // Pure UI, no logic
 interface ButtonProps {
@@ -350,7 +403,8 @@ export const Button = ({ onClick, disabled, children }: ButtonProps) => (
 );
 ```
 
-### Container Component (Smart)
+## 6. Container Component (Smart)
+
 ```typescript
 // Handles logic and state, delegates rendering
 export const TransactionListContainer = () => {
@@ -363,7 +417,8 @@ export const TransactionListContainer = () => {
 };
 ```
 
-### Custom Hook Pattern
+## 7. Custom Hook Pattern
+
 ```typescript
 // Extract reusable logic
 export const useLocalStorage = (key: string, initialValue: string) => {
@@ -387,31 +442,3 @@ export const useLocalStorage = (key: string, initialValue: string) => {
   return [value, setValueWithStorage] as const;
 };
 ```
-
----
-
-## Anti-Patterns
-
-❌ **Don't**: Put all logic in one 500-line component  
-✅ **Do**: Split into subcomponents and hooks
-
-❌ **Don't**: Pass 10+ props through multiple levels (prop drilling)  
-✅ **Do**: Use Context API or custom hooks
-
-❌ **Don't**: Mix UI logic with business logic  
-✅ **Do**: Separate into container (logic) and presentational (UI)
-
-❌ **Don't**: Duplicate logic across components  
-✅ **Do**: Extract to custom hooks
-
-❌ **Don't**: Create components that are hard to test  
-✅ **Do**: Make components pure and simple
-
----
-
-## References
-
-- **Existing Components**: Review `src/components/LoginForm.tsx`, `Button.tsx`
-- **React Patterns**: https://react.dev/learn/passing-props-to-a-component
-- **Custom Hooks**: https://react.dev/learn/reusing-logic-with-custom-hooks
-- **Compound Components**: https://www.patterns.dev/posts/compound-pattern

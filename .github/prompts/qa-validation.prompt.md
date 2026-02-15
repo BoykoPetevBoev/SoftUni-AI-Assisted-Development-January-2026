@@ -45,7 +45,6 @@ Call the QA Agent with this instruction:
    - Provide a summary of issues found and fixed
    - List any remaining issues that need manual review
    - Confirm all tests pass
-   - Rate code quality (1-10) with justification
 ```
 
 **Step 2: Review QA Agent Output**
