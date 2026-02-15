@@ -15,9 +15,111 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Patterns Overview
 
-### 1. Basic Service Function
+**Service Layer Pattern**: Create service files that contain all API calls for a specific entity. Each service exports an object with methods for different operations (getAll, getById, create, update, delete). Services use a base `apiRequest` utility for consistency. Return properly typed responses.
+
+**React Query Hooks for Queries**: Create custom hooks that wrap React Query's `useQuery`. Each query needs a unique `queryKey` (as an array). Include an `enabled` condition for conditional queries (e.g., only fetch if ID exists). Return `data`, `isLoading`, `error`, and other state from React Query.
+
+**React Query Hooks for Mutations**: Wrap mutations with `useMutation`. Always use `queryClient.invalidateQueries()` in `onSuccess` to refresh related data. Show toast notifications on success/error. Return `mutate`, `isPending`, and other mutation state to components.
+
+**Query Keys Pattern**: Define query keys as constants to avoid string duplication. Use a hierarchical structure (e.g., `['users', 'list']`, `['users', 'detail', id]`). Follow a consistent naming convention. Use this pattern to manage cache invalidation effectively.
+
+**File Structure**: Organize code into `services/` (API calls), `hooks/` (React Query hooks), `api/` (base utilities), and `types/` (TypeScript types). Each entity gets its own service file and corresponding hook files.
+
+**Common Patterns**: List queries return all items with `queryKey: ['items']`. Detail queries return single items with `queryKey: ['items', id]` and `enabled: !!id` condition. Use the same patterns for create/update/delete mutations across all entities.
+
+---
+
+## Key Rules
+
+- Create service files with API methods
+- Define hooks that use React Query
+- Use query keys as arrays (not strings)
+- Include `enabled` condition for conditional queries
+- Always `invalidateQueries` after mutations
+- Use `isPending` instead of `isLoading` for mutations
+- Return proper TypeScript types from services
+- Show toast notifications for errors
+- Use service layer, avoid direct API calls in components
+- Organize by entity (users, transactions, etc.)
+- Define query keys as constants
+- Filter queries at the queryset level
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Fetch data in useEffect  
+✅ **Do**: Use React Query hooks
+
+❌ **Don't**: Manually manage loading/error state  
+✅ **Do**: Use `isLoading`, `error` from React Query
+
+❌ **Don't**: Forget cache invalidation after mutations  
+✅ **Do**: Always `invalidateQueries` in `onSuccess`
+
+❌ **Don't**: Use string literals for query keys  
+✅ **Do**: Define query keys as constants
+
+❌ **Don't**: Make API calls directly in components  
+✅ **Do**: Create service layer + React Query hooks
+
+---
+
+## Quality Checklist
+
+- [ ] **Service file created**: `src/services/entityService.ts`
+- [ ] **Hook file created**: `src/hooks/useEntity.ts`
+- [ ] **Query keys defined**: Consistent naming with array format
+- [ ] **Error handling**: `onError` callback with toast notification
+- [ ] **Cache invalidation**: `invalidateQueries` after mutations
+- [ ] **Loading states**: Use `isLoading` or `isPending`
+- [ ] **TypeScript types**: Return types and DTOs defined
+- [ ] **Enabled condition**: For conditional queries (e.g., `enabled: !!id`)
+
+---
+
+## Common Patterns
+
+### List Query Pattern
+```
+useQuery({ queryKey: ['items'], queryFn: getAll })
+```
+
+### Detail Query Pattern
+```
+useQuery({ queryKey: ['items', id], queryFn: () => getById(id), enabled: !!id })
+```
+
+### Create Mutation Pattern
+```
+useMutation({ mutationFn: create, onSuccess: () => invalidateQueries(['items']) })
+```
+
+### Update Mutation Pattern
+```
+useMutation({ mutationFn: (data) => update(id, data), onSuccess: () => invalidateQueries(['items']) })
+```
+
+### Delete Mutation Pattern
+```
+useMutation({ mutationFn: delete, onSuccess: () => invalidateQueries(['items']) })
+```
+
+---
+
+## References
+
+- **Existing Code**: `src/api/requester.ts` for base API utility
+- **React Query Docs**: https://tanstack.com/query/latest
+- **Project Pattern**: Service layer → React Query hook → Component
+
+---
+
+# CODE EXAMPLES
+
+## 1. Basic Service Function
 
 **File**: `src/services/userService.ts`
 
@@ -55,9 +157,7 @@ export const userService = {
 };
 ```
 
----
-
-### 2. React Query Hook for GET (useQuery)
+## 2. React Query Hook for GET (useQuery)
 
 **File**: `src/hooks/useUser.ts`
 
@@ -84,9 +184,7 @@ const UserProfile = ({ userId }: { userId: string }) => {
 };
 ```
 
----
-
-### 3. React Query Hook for POST/PUT/DELETE (useMutation)
+## 3. React Query Hook for POST/PUT/DELETE (useMutation)
 
 **File**: `src/hooks/useCreateUser.ts`
 
@@ -131,9 +229,9 @@ const CreateUserForm = () => {
 };
 ```
 
----
+## 4. Query Keys Pattern
 
-### 4. Query Keys Pattern
+**File**: `src/constants/queryKeys.ts`
 
 ```typescript
 // src/constants/queryKeys.ts
@@ -159,11 +257,10 @@ useQuery({
 });
 ```
 
----
-
-### 5. Complete Service + Hook Example
+## 5. Complete Service + Hook Example
 
 **Service**: `src/services/transactionService.ts`
+
 ```typescript
 import { apiRequest } from '../api/requester';
 import { Transaction, CreateTransactionDto } from '../types/transaction';
@@ -193,6 +290,7 @@ export const transactionService = {
 ```
 
 **Hook**: `src/hooks/useTransactions.ts`
+
 ```typescript
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '../services/transactionService';
@@ -242,6 +340,7 @@ export const useDeleteTransaction = () => {
 ```
 
 **Usage in Component**:
+
 ```typescript
 const TransactionList = () => {
   const { data: transactions, isLoading } = useTransactions();
@@ -264,44 +363,8 @@ const TransactionList = () => {
 };
 ```
 
----
+## 6. List + Detail Pattern
 
-## File Structure
-
-```
-src/
-├── services/
-│   ├── userService.ts          # API calls
-│   ├── transactionService.ts
-│   └── authService.ts
-├── hooks/
-│   ├── useUser.ts              # React Query hooks
-│   ├── useTransactions.ts
-│   └── useAuth.ts
-├── api/
-│   └── requester.ts            # Base API utility
-└── types/
-    └── transaction.ts          # TypeScript types
-```
-
----
-
-## Quality Checklist
-
-- [ ] **Service file created**: `src/services/entityService.ts`
-- [ ] **Hook file created**: `src/hooks/useEntity.ts`
-- [ ] **Query keys defined**: Consistent naming with array format
-- [ ] **Error handling**: `onError` callback with toast notification
-- [ ] **Cache invalidation**: `invalidateQueries` after mutations
-- [ ] **Loading states**: Use `isLoading` or `isPending`
-- [ ] **TypeScript types**: Return types and DTOs defined
-- [ ] **Enabled condition**: For conditional queries (e.g., `enabled: !!id`)
-
----
-
-## Common Patterns
-
-### List + Detail Pattern
 ```typescript
 // List
 export const useUsers = () => {
@@ -321,7 +384,8 @@ export const useUser = (id: string) => {
 };
 ```
 
-### Create + Update + Delete Pattern
+## 7. Create + Update + Delete Pattern
+
 ```typescript
 export const useCreateEntity = () => {
   const queryClient = useQueryClient();
@@ -347,30 +411,3 @@ export const useDeleteEntity = () => {
   });
 };
 ```
-
----
-
-## Anti-Patterns
-
-❌ **Don't**: Fetch data in useEffect  
-✅ **Do**: Use React Query hooks
-
-❌ **Don't**: Manually manage loading/error state  
-✅ **Do**: Use `isLoading`, `error` from React Query
-
-❌ **Don't**: Forget cache invalidation after mutations  
-✅ **Do**: Always `invalidateQueries` in `onSuccess`
-
-❌ **Don't**: Use string literals for query keys  
-✅ **Do**: Define query keys as constants
-
-❌ **Don't**: Make API calls directly in components  
-✅ **Do**: Create service layer + React Query hooks
-
----
-
-## References
-
-- **Existing Code**: `src/api/requester.ts` for base API utility
-- **React Query Docs**: https://tanstack.com/query/latest
-- **Project Pattern**: Service layer → React Query hook → Component

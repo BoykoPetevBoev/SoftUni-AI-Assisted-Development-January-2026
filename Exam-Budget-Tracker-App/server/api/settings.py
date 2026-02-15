@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'health_check',
     'users',
+    'budgets',
 ]
 
 MIDDLEWARE = [

@@ -16,9 +16,111 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Patterns Overview
 
-### 1. Basic Model Serializer
+**Basic Model Serializer**: Use ModelSerializer as the base for serializing Django models. Define fields explicitly (not `__all__`). Mark read-only fields like `id`. Use extra_kwargs for field options. This pattern saves boilerplate while maintaining clarity.
+
+**Validation Patterns**: Use `validate_<field_name>()` for single field validation (e.g., username uniqueness). Use `validate()` for cross-field validation (e.g., password match). Use `write_only=True` for password fields. Provide clear, user-friendly error messages. Override `create()` for custom creation logic (e.g., hashing passwords).
+
+**Nested Serializers**: Use nested serializers to include related objects. Mark nested relationships as `read_only=True` if not writable. Use `many=True` for reverse relationships (lists). Access authenticated user via `self.context['request'].user`.
+
+**Custom Fields**: Use `SerializerMethodField` for computed/dynamic fields. Use `to_representation()` for output transformation (e.g., formatting, filtering). Use `to_internal_value()` for input transformation. Custom fields are read-only by default.
+
+**List Serializers**: Create custom list serializers for bulk operations (creating multiple objects efficiently). Override the `list_serializer_class` in Meta. Use `bulk_create()` for performance.
+
+---
+
+## Key Rules
+
+- Use ModelSerializer for database models
+- Define fields explicitly (no `__all__`)
+- Mark read-only fields (id, timestamps)
+- Use extra_kwargs for field options
+- Use validate_<field_name>() for single field validation
+- Use validate() for cross-field validation
+- Use write_only=True for password fields
+- Provide clear error messages
+- Override create()/update() for custom logic
+- Use nested serializers for relationships
+- Use SerializerMethodField for computed fields
+- Access request via self.context['request'].user
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Use `fields = '__all__'`  
+✅ **Do**: Define fields explicitly
+
+❌ **Don't**: Skip validation on sensitive fields  
+✅ **Do**: Add validators and error messages
+
+❌ **Don't**: Expose internal fields in serializer  
+✅ **Do**: Mark confidential fields as write_only
+
+❌ **Don't**: Have business logic in serializer.create()  
+✅ **Do**: Keep create() simple, add logic to view
+
+❌ **Don't**: Forget to set context['request'].user for nested fields  
+✅ **Do**: Always pass request context to serializer
+
+---
+
+## Quality Checklist
+
+- [ ] **Serializer created**: `src/serializers.py`
+- [ ] **Fields defined explicitly**: No `__all__`
+- [ ] **Validation included**: Field-level and object-level
+- [ ] **Custom fields documented**: Clear purpose
+- [ ] **Error messages clear**: User-friendly text
+- [ ] **Nested serializers**: For relationships
+- [ ] **Read-only fields**: Properly marked
+- [ ] **create()/update()**: Custom logic when needed
+
+---
+
+## Common Patterns
+
+### Simple Serializer
+```
+model = Category, fields = ['id', 'name']
+```
+
+### Serializer with Validation
+```
+Use field validators and error messages
+```
+
+### Nested with Create
+```
+Nested serializers with custom create logic
+```
+
+---
+
+## Commands
+
+```bash
+# Run serializer tests
+pytest api/users/test_serializers.py
+
+# Run all tests with coverage
+pytest --cov=api
+```
+
+---
+
+## References
+
+- **Existing Serializers**: `users/serializers.py`, `health_check/serializers.py`
+- **Django REST Docs**: https://www.django-rest-framework.org/api-guide/serializers/
+- **Validation Docs**: https://www.django-rest-framework.org/api-guide/serializers/#validation
+
+---
+
+# CODE EXAMPLES
+
+## 1. Basic Model Serializer
 
 **File**: `api/users/serializers.py`
 
@@ -36,15 +138,7 @@ class UserSerializer(serializers.ModelSerializer):
         }
 ```
 
-**Key Rules**:
-- Use `ModelSerializer` for database models
-- Define `fields` explicitly (not `__all__`)
-- Mark `read_only_fields` for non-editable fields
-- Use `extra_kwargs` for field options
-
----
-
-### 2. Validation Patterns
+## 2. Validation Patterns - Good Examples
 
 ```python
 from rest_framework import serializers
@@ -90,16 +184,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 ```
 
-**Key Rules**:
-- Use `validate_<field_name>()` for single field validation
-- Use `validate()` for cross-field validation
-- Override `create()` for custom creation logic
-- Use `write_only=True` for password fields
-- Provide clear error messages
-
----
-
-### 3. Nested Serializers
+## 3. Nested Serializers
 
 ```python
 class CommentSerializer(serializers.ModelSerializer):
@@ -125,15 +210,7 @@ class PostSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 ```
 
-**Key Rules**:
-- Use nested serializers for related objects
-- Mark nested relationships as `read_only=True` if not writable
-- Use `many=True` for reverse relationships (lists)
-- Access authenticated user via `self.context['request'].user`
-
----
-
-### 4. Custom Fields
+## 4. Custom Fields
 
 ```python
 class TransactionSerializer(serializers.ModelSerializer):
@@ -165,15 +242,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         return data
 ```
 
-**Key Rules**:
-- Use `SerializerMethodField` for computed/dynamic fields
-- Use `to_representation()` for output transformation
-- Use `to_internal_value()` for input transformation
-- All custom fields are read-only by default
-
----
-
-### 5. List Serializers (Multiple Objects)
+## 5. List Serializers (Multiple Objects)
 
 ```python
 class BulkTransactionSerializer(serializers.ListSerializer):
@@ -197,95 +266,3 @@ if isinstance(request.data, list):
 else:
     serializer = TransactionSerializer(data=request.data)
 ```
-
----
-
-## Quality Checklist
-
-- [ ] **Serializer created**: `src/serializers.py`
-- [ ] **Fields defined explicitly**: No `__all__`
-- [ ] **Validation included**: Field-level and object-level
-- [ ] **Custom fields documented**: Clear purpose
-- [ ] **Error messages clear**: User-friendly text
-- [ ] **Nested serializers**: For relationships
-- [ ] **Read-only fields**: Properly marked
-- [ ] **create()/update()**: Custom logic when needed
-
----
-
-## Common Patterns
-
-### Simple Serializer
-```python
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
-        read_only_fields = ['id']
-```
-
-### Serializer with Validation
-```python
-class AmountSerializer(serializers.Serializer):
-    amount = serializers.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        min_value=0.01,
-        error_messages={
-            'min_value': 'Amount must be greater than 0.',
-        }
-    )
-```
-
-### Nested with Create
-```python
-class PostWithCommentsSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(many=True, read_only=True)
-    
-    class Meta:
-        model = Post
-        fields = ['id', 'title', 'comments']
-
-    def create(self, validated_data):
-        validated_data['author'] = self.context['request'].user
-        return Post.objects.create(**validated_data)
-```
-
----
-
-## Anti-Patterns
-
-❌ **Don't**: Use `fields = '__all__'`  
-✅ **Do**: Define fields explicitly
-
-❌ **Don't**: Skip validation on sensitive fields  
-✅ **Do**: Add validators and error messages
-
-❌ **Don't**: Expose internal fields in serializer  
-✅ **Do**: Mark confidential fields as write_only
-
-❌ **Don't**: Have business logic in serializer.create()  
-✅ **Do**: Keep create() simple, add logic to view
-
-❌ **Don't**: Forget to set context['request'].user for nested fields  
-✅ **Do**: Always pass request context to serializer
-
----
-
-## Commands
-
-```bash
-# Run serializer tests
-pytest api/users/test_serializers.py
-
-# Run all tests with coverage
-pytest --cov=api
-```
-
----
-
-## References
-
-- **Existing Serializers**: `users/serializers.py`, `health_check/serializers.py`
-- **Django REST Docs**: https://www.django-rest-framework.org/api-guide/serializers/
-- **Validation Docs**: https://www.django-rest-framework.org/api-guide/serializers/#validation

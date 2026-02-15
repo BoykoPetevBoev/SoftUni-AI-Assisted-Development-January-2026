@@ -16,9 +16,105 @@ license: MIT
 
 ---
 
-## Core Patterns
+## Core Patterns Overview
 
-### 1. Basic API Test Structure
+**Basic API Test Structure**: Use APIClient to test endpoints. Create fixtures for common test data (api_client, test_user). Use @pytest.mark.django_db to enable database access. Test one thing per test method with descriptive names. This pattern provides clean isolation and readability.
+
+**Authentication & Permissions**: Create authenticated_client fixture by generating JWT tokens. Test both authenticated and unauthenticated cases. Test 401 responses for missing auth and 403 responses for missing permissions. Verify data isolation so users can't access others' data.
+
+**Serializer Testing**: Create fixtures for test data (valid_registration_data). Test validation logic by checking is_valid(). Test create() and update() methods. Verify error messages are present. Test special cases like password hashing.
+
+**Mocking External Services**: Use @patch() decorator to mock external dependencies. Mock at the point of use, not at import. Verify mocks were called with correct arguments using assert_called_once(). Use return_value to set mock return data.
+
+**Pagination Testing**: Verify paginated responses have count, results, next, previous. Test page boundaries. Test edge cases like last page with fewer items. Verify next/previous URLs are correct.
+
+**Error Handling Testing**: Test all HTTP error codes (400, 403, 404, 500). Test invalid input validation. Test resource not found scenarios. Test permission denied scenarios. Verify error messages in response.
+
+---
+
+## Key Rules
+
+- Use @pytest.mark.django_db for database access
+- Use fixtures for common test data
+- Test one thing per test method
+- Use descriptive test names starting with test_
+- Test both happy path and error cases
+- Use APIClient from rest_framework.test
+- Create authenticated clients with JWT tokens
+- Mock external services with @patch()
+- Verify mock calls with assert_called_once()
+- Test 401, 403, 404 error codes
+
+---
+
+## Anti-Patterns
+
+❌ **Don't**: Hardcode test data in test methods  
+✅ **Do**: Use fixtures with parametrization
+
+❌ **Don't**: Test implementation details  
+✅ **Do**: Test API behavior and responses
+
+❌ **Don't**: Test external APIs directly  
+✅ **Do**: Mock external services
+
+❌ **Don't**: Forget to test error cases  
+✅ **Do**: Test 400, 403, 404 responses
+
+❌ **Don't**: Share database state between tests  
+✅ **Do**: Use @pytest.mark.django_db and fixtures
+
+---
+
+## Quality Checklist
+
+- [ ] **Tests use fixtures**: Not hardcoded data
+- [ ] **Database isolation**: @pytest.mark.django_db used
+- [ ] **Auth tested**: Both authenticated and unauthenticated cases
+- [ ] **Permissions tested**: Access control verified
+- [ ] **Edge cases covered**: Empty results, boundaries
+- [ ] **Error cases tested**: 400, 403, 404 responses
+- [ ] **Mocks used**: External services mocked
+- [ ] **Descriptive names**: Clear what each test does
+
+---
+
+## Commands
+
+```bash
+# Run all tests
+pytest
+
+# Run tests with coverage
+pytest --cov=api
+
+# Run specific test file
+pytest api/users/tests.py
+
+# Run specific test class
+pytest api/users/tests.py::TestUserRegistration
+
+# Run with verbose output
+pytest -v
+
+# Run and show print statements
+pytest -s
+```
+
+---
+
+## References
+
+- **Existing Tests**: `users/tests.py`
+- **Pytest Django**: https://pytest-django.readthedocs.io/
+- **Pytest Fixtures**: https://docs.pytest.org/en/stable/fixture.html
+- **DRF Testing**: https://www.django-rest-framework.org/api-guide/testing/
+
+---
+
+# CODE EXAMPLES
+
+## 1. Basic API Test Structure
 
 **File**: `api/users/test_views.py`
 
@@ -74,15 +170,7 @@ class TestUserRegistration:
         assert 'email' in response.data
 ```
 
-**Key Rules**:
-- Use `@pytest.mark.django_db` for database access
-- Use fixtures for common test data
-- Test one thing per test method
-- Use descriptive test names
-
----
-
-### 2. Authentication & Permissions
+## 2. Authentication & Permissions
 
 ```python
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -113,7 +201,7 @@ class TestUserEndpoints:
 
     def test_user_cannot_access_other_user_data(self, api_client):
         """Test user can only access their own data"""
-        user1 = user2 = User.objects.create_user(
+        user1 = User.objects.create_user(
             username='user1',
             email='user1@example.com',
             password='pass123'
@@ -133,14 +221,7 @@ class TestUserEndpoints:
         assert response.status_code == status.HTTP_404_NOT_FOUND
 ```
 
-**Key Rules**:
-- Test both authenticated and unauthenticated cases
-- Test permission denials (403 Forbidden)
-- Test data isolation (users can't access others' data)
-
----
-
-### 3. Serializer Testing
+## 3. Serializer Testing
 
 ```python
 import pytest
@@ -185,15 +266,7 @@ class TestUserRegistrationSerializer:
         assert user_from_db.check_password('SecurePass123!')
 ```
 
-**Key Rules**:
-- Create fixtures for test data
-- Test validation logic
-- Test `create()` and `update()` methods
-- Verify error messages
-
----
-
-### 4. Mocking External Services
+## 4. Mocking External Services
 
 ```python
 from unittest.mock import patch, MagicMock
@@ -233,15 +306,7 @@ class TestTransactionCreation:
         mock_exchange_rate.assert_called_once_with('EUR', 'USD')
 ```
 
-**Key Rules**:
-- Use `@patch()` to mock external services
-- Mock at the point of use, not import
-- Verify mocks were called with correct arguments
-- Use `return_value` for mocking return data
-
----
-
-### 5. Pagination Testing
+## 5. Pagination Testing
 
 ```python
 @pytest.mark.django_db
@@ -278,9 +343,7 @@ class TestTransactionPagination:
         assert response.data['next'] is None  # No next page
 ```
 
----
-
-### 6. Error Handling Testing
+## 6. Error Handling Testing
 
 ```python
 @pytest.mark.django_db
@@ -327,92 +390,26 @@ class TestErrorHandling:
         assert response.status_code == status.HTTP_403_FORBIDDEN
 ```
 
----
+## 7. Test Successful Request
 
-## Quality Checklist
-
-- [ ] **Tests use fixtures**: Not hardcoded data
-- [ ] **Database isolation**: @pytest.mark.django_db used
-- [ ] **Auth tested**: Both authenticated and unauthenticated cases
-- [ ] **Permissions tested**: Access control verified
-- [ ] **Edge cases covered**: Empty results, boundaries
-- [ ] **Error cases tested**: 400, 403, 404 responses
-- [ ] **Mocks used**: External services mocked
-- [ ] **Descriptive names**: Clear what each test does
-
----
-
-## Common Patterns
-
-### Test Successful Request
 ```python
 def test_create_returns_201(self, authenticated_client):
     response = authenticated_client.post('/api/items/', {'name': 'test'})
     assert response.status_code == status.HTTP_201_CREATED
 ```
 
-### Test Required Field
+## 8. Test Required Field
+
 ```python
 def test_missing_field_returns_400(self, authenticated_client):
     response = authenticated_client.post('/api/items/', {})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 ```
 
-### Test Forbidden Access
+## 9. Test Forbidden Access
+
 ```python
 def test_no_auth_returns_401(self, api_client):
     response = api_client.get('/api/protected/')
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 ```
-
----
-
-## Anti-Patterns
-
-❌ **Don't**: Hardcode test data in test methods  
-✅ **Do**: Use fixtures with parametrization
-
-❌ **Don't**: Test implementation details  
-✅ **Do**: Test API behavior and responses
-
-❌ **Don't**: Test external APIs directly  
-✅ **Do**: Mock external services
-
-❌ **Don't**: Forget to test error cases  
-✅ **Do**: Test 400, 403, 404 responses
-
-❌ **Don't**: Share database state between tests  
-✅ **Do**: Use @pytest.mark.django_db and fixtures
-
----
-
-## Commands
-
-```bash
-# Run all tests
-pytest
-
-# Run tests with coverage
-pytest --cov=api
-
-# Run specific test file
-pytest api/users/tests.py
-
-# Run specific test class
-pytest api/users/tests.py::TestUserRegistration
-
-# Run with verbose output
-pytest -v
-
-# Run and show print statements
-pytest -s
-```
-
----
-
-## References
-
-- **Existing Tests**: `users/tests.py`
-- **Pytest Django**: https://pytest-django.readthedocs.io/
-- **Pytest Fixtures**: https://docs.pytest.org/en/stable/fixture.html
-- **DRF Testing**: https://www.django-rest-framework.org/api-guide/testing/
