@@ -3,13 +3,7 @@ name: qa
 description: Validates, refactors, and enforces quality standards for frontend and backend
 argument-hint: Area, feature, or concern to validate and improve
 target: vscode
-tools:
-  - read
-  - search
-  - execute/getTerminalOutput
-  - execute/testFailure
-  - agent
-  - vscode/askQuestions
+tools: [vscode/runCommand, vscode/askQuestions, vscode/vscodeAPI, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/createAndRunTask, execute/runInTerminal, execute/runTests, execute/testFailure, read, agent, edit/editFiles, edit/editNotebook, search, web/githubRepo, ms-python.python/getPythonExecutableCommand]
 agents:
   - frontend-agent–budget-tracker
   - backend-agent–budget-tracker

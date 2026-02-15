@@ -10,6 +10,18 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        '**/*.stories.*',
+        '**/*.d.ts',
+        '**/index.ts',
+        'src/main.tsx',
+        'src/App.tsx',
+        'src/setupTests.ts',
+        'src/styles/**',
+        'src/types/**',
+        'storybook-static/**',
+      ],
     },
   },
 })

@@ -1,0 +1,132 @@
+@import '../styles/variables';
+
+.budget-card {
+  background: $color-bg-card;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-sm;
+  @include smooth-transition(transform, box-shadow, border-color);
+
+  &:hover {
+    box-shadow: $shadow-md;
+    border-color: $color-border-default;
+    transform: translateY(-2px);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-md;
+    gap: $spacing-md;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    flex: 1;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    @include smooth-transition(background-color, box-shadow, transform);
+
+    &--edit {
+      background: $color-primary;
+      color: $color-bg-primary;
+
+      &:hover:not(:disabled) {
+        background: $color-primary-hover;
+      }
+    }
+
+    &--delete {
+      background: transparent;
+      color: $color-error;
+      border-color: $color-error;
+
+      &:hover:not(:disabled) {
+        background: rgba(255, 107, 107, 0.15);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__description {
+    margin: 0 0 $spacing-md 0;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    line-height: $line-height-normal;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: $spacing-md;
+    border-top: 1px solid $color-border-light;
+  }
+
+  &__meta {
+    display: flex;
+    gap: $spacing-lg;
+    font-size: $font-size-sm;
+  }
+
+  &__date {
+    color: $color-text-tertiary;
+  }
+
+  &__amount {
+    font-weight: $font-weight-semibold;
+    color: $color-secondary;
+    font-size: $font-size-md;
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .budget-card {
+    padding: $spacing-lg;
+
+    &__header {
+      flex-direction: column;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    &__btn {
+      flex: 1;
+
+      &:not(:last-child) {
+        margin-right: 4px;
+      }
+    }
+
+    &__meta {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+}

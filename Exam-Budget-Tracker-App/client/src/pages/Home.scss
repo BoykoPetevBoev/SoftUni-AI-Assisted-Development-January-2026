@@ -38,6 +38,17 @@
   }
 }
 
+.home-header__content {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2xl;
+  flex: 1;
+
+  @include respond-to('sm') {
+    gap: $spacing-lg;
+  }
+}
+
 // Logo/site title
 .home-logo {
   font-size: $font-size-xl;
@@ -48,6 +59,37 @@
   background-clip: text;
   margin: 0;
   letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+// Navigation menu
+.home-nav {
+  display: flex;
+  gap: $spacing-xl;
+  align-items: center;
+  margin: 0;
+
+  @include respond-to('sm') {
+    gap: $spacing-md;
+  }
+}
+
+.home-nav__link {
+  color: $color-text-secondary;
+  text-decoration: none;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+
+  &:hover {
+    color: $color-text-primary;
+  }
+
+  &--active {
+    color: $color-primary;
+  }
 }
 
 // ============================================================================

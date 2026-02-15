@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (refreshToken) {
         await logoutMutation.mutateAsync(refreshToken);
       }
-    } catch (err: unknown) {
+    } catch {
       // Even if logout fails on server, clear local tokens
       // Error is silently handled as logout should succeed locally
     } finally {
