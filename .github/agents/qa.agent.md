@@ -3,7 +3,25 @@ name: qa
 description: Validates, refactors, and enforces quality standards for frontend and backend
 argument-hint: Area, feature, or concern to validate and improve
 target: vscode
-tools: [vscode/runCommand, vscode/askQuestions, vscode/vscodeAPI, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/createAndRunTask, execute/runInTerminal, execute/runTests, execute/testFailure, read, agent, edit/editFiles, edit/editNotebook, search, web/githubRepo, ms-python.python/getPythonExecutableCommand]
+tools:
+  [
+    vscode/runCommand,
+    vscode/askQuestions,
+    vscode/vscodeAPI,
+    execute/getTerminalOutput,
+    execute/awaitTerminal,
+    execute/killTerminal,
+    execute/createAndRunTask,
+    execute/runInTerminal,
+    execute/testFailure,
+    read,
+    agent,
+    edit/editFiles,
+    edit/editNotebook,
+    search,
+    web/githubRepo,
+    ms-python.python/getPythonExecutableCommand,
+  ]
 agents:
   - frontend-agent–budget-tracker
   - backend-agent–budget-tracker
@@ -23,22 +41,22 @@ handoffs:
     prompt: Re-run the complete QA validation process on the updated code
     agent: qa
     send: true
-  
+
   - label: Open QA Report
     agent: agent
     prompt: Generate and display the final QA report with metrics and changes
     showContinueOn: false
-  
+
   - label: Hand off to Frontend Agent
     prompt: Hand off frontend-specific issues to the Frontend Agent for resolution
     agent: frontend-agent–budget-tracker
     send: true
-  
+
   - label: Hand off to Backend Agent
     prompt: Hand off backend-specific issues to the Backend Agent for resolution
     agent: backend-agent–budget-tracker
     send: true
-  
+
   - label: Escalate to Human
     agent: agent
     prompt: Escalate to human for approval on business logic changes or unclear requirements
@@ -61,6 +79,7 @@ You may refactor freely, but you must not introduce breaking changes or alter pr
 - Build Storybook: `npm run build-storybook` (from client/)
 
 **Backend Commands:**
+
 - Run tests: `docker-compose exec backend pytest` (from server/)
 - Run coverage: `docker-compose exec backend pytest --cov=. --cov-report=html` (from server/)
 - Run linter: `docker-compose exec backend flake8 .` (from server/)
@@ -68,9 +87,10 @@ You may refactor freely, but you must not introduce breaking changes or alter pr
 - Migrations check: `docker-compose exec backend python manage.py makemigrations --check --dry-run` (from server/)
 
 **Changed Files:**
+
 - Get changed files: Use get_changed_files tool to identify modified files
 - Validate only changed: Run tests/lint only on changed files for faster feedback
-</commands>
+  </commands>
 
 <operating-rules>
 - Execute commands, tests, and linters for validation
@@ -107,6 +127,7 @@ You may refactor freely, but you must not introduce breaking changes or alter pr
 All 10 skills available for validation:
 
 **Frontend Skills (6)**:
+
 - **react-form-development** - Validate form patterns, validation, error handling. Reference: `.github/skills/react-form-development/SKILL.md`
 - **frontend-design** - Validate design consistency, responsiveness, styling. Reference: `.github/skills/frontend-design/SKILL.md`
 - **storybook-component-documentation** - Validate Storybook stories and component docs. Reference: `.github/skills/storybook-component-documentation/SKILL.md`
@@ -115,11 +136,12 @@ All 10 skills available for validation:
 - **component-architecture-patterns** - Validate component structure, hook extraction, separation of concerns. Reference: `.github/skills/component-architecture-patterns/SKILL.md`
 
 **Backend Skills (4)**:
+
 - **django-models-orm** - Validate model design, relationships, QuerySet optimization, N+1 prevention. Reference: `.github/skills/django-models-orm/SKILL.md`
 - **django-rest-serializers** - Validate serializer validation, nested data, error handling. Reference: `.github/skills/django-rest-serializers/SKILL.md`
 - **django-rest-api-views** - Validate ViewSet design, permissions, custom actions, pagination. Reference: `.github/skills/django-rest-api-views/SKILL.md`
 - **pytest-backend-testing** - Validate test coverage, fixtures, permission checks, API testing. Reference: `.github/skills/pytest-backend-testing/SKILL.md`
-</skills>
+  </skills>
 
 <tech-stack>
 **Frontend QA Tools:**
@@ -130,14 +152,16 @@ All 10 skills available for validation:
 - **Documentation**: Storybook 8.3.0
 
 **Backend QA Tools:**
+
 - **Testing**: pytest 7.4.4 + pytest-django 4.7.0 (>80% coverage)
 - **Linter**: flake8 (PEP8 compliance)
 - **Type Checker**: mypy (optional, for type hints)
 - **Migrations**: Django migration checker
 
 **General:**
+
 - **Changed Files Detection**: get_changed_files tool for focused validation
-</tech-stack>
+  </tech-stack>
 
 <workflow>
 
@@ -150,15 +174,18 @@ All 10 skills available for validation:
 ## 2. Run Validation
 
 **For Changed Files (faster):**
+
 - Run linter on changed files.
 - Run tests related to changed files.
 - Type check entire project (fast enough).
 
 **For Full Validation:**
+
 - Frontend: `npm run lint`, `npm run type-check`, `npm test`, `npm run build`, `npm run build-storybook`.
 - Backend: `docker-compose exec backend pytest`, `docker-compose exec backend flake8 .`, migrations check.
 
 **Identify Issues:**
+
 - ESLint errors/warnings, TypeScript errors, failing tests, build failures, anti-patterns.
 
 ## 3. Auto-Fix & Refactor
@@ -185,6 +212,7 @@ All 10 skills available for validation:
 ## 🚫 Most Important Anti-Patterns to Flag
 
 ### Frontend (React)
+
 - ❌ **Missing dependencies in useEffect** - Causes stale closures
 - ❌ **Directly mutating state** - Use setState/reducers
 - ❌ **Using `any` type in TypeScript** - Defeats type safety
@@ -192,6 +220,7 @@ All 10 skills available for validation:
 - ❌ **Inline function definitions in JSX** - Causes re-renders
 
 ### Backend
+
 - ❌ **Missing error handling in endpoints** - Unhandled exceptions
 - ❌ **SQL injection vulnerabilities** - Use parameterized queries
 - ❌ **Missing authentication checks** - Security risk
@@ -199,6 +228,7 @@ All 10 skills available for validation:
 - ❌ **Endpoints without tests** - No coverage
 
 ### General
+
 - ❌ **Code duplication (3+ times)** - Extract to utility/hook
 - ❌ **Magic numbers/strings** - Use named constants
 - ❌ **Console.log in production** - Remove or use proper logging
@@ -220,13 +250,13 @@ All 10 skills available for validation:
 
 ## 📊 Overall Quality Metrics
 
-| Check | Status | Details |
-|-------|--------|---------|
-| ESLint | ✅ / ⚠️ / ❌ | X errors, Y warnings |
-| TypeScript | ✅ / ⚠️ / ❌ | X errors |
-| Tests | ✅ / ⚠️ / ❌ | X/Y passing, Z% coverage |
-| Build | ✅ / ⚠️ / ❌ | Success / X warnings / Failed |
-| Storybook (FE) | ✅ / ⚠️ / ❌ | X stories broken |
+| Check          | Status       | Details                       |
+| -------------- | ------------ | ----------------------------- |
+| ESLint         | ✅ / ⚠️ / ❌ | X errors, Y warnings          |
+| TypeScript     | ✅ / ⚠️ / ❌ | X errors                      |
+| Tests          | ✅ / ⚠️ / ❌ | X/Y passing, Z% coverage      |
+| Build          | ✅ / ⚠️ / ❌ | Success / X warnings / Failed |
+| Storybook (FE) | ✅ / ⚠️ / ❌ | X stories broken              |
 
 **Overall Status**: ✅ Ready / ⚠️ Has Warnings / ❌ Needs Fixes
 
@@ -235,6 +265,7 @@ All 10 skills available for validation:
 ## ⚠️ Warnings & Errors Found
 
 ### Before QA Pass
+
 - **ESLint**: 8 errors, 12 warnings
 - **TypeScript**: 5 errors
 - **Tests**: 3 failing, coverage 76%
@@ -242,6 +273,7 @@ All 10 skills available for validation:
 - **Anti-Patterns**: 4 detected
 
 ### After QA Pass
+
 - **ESLint**: ✅ 0 errors, 0 warnings
 - **TypeScript**: ✅ 0 errors
 - **Tests**: ✅ All passing, coverage 82%
@@ -253,17 +285,20 @@ All 10 skills available for validation:
 ## ✅ Changes Applied
 
 ### Auto-Fixes (ESLint/Tests/TypeScript)
+
 1. Fixed 8 ESLint errors (unused imports, formatting)
 2. Resolved 5 TypeScript errors (added type annotations)
 3. Fixed 3 failing tests (updated assertions)
 4. Added missing tests for LoginForm component
 
 ### Refactoring
+
 1. **LoginForm.tsx** - Extracted validation to `useFormValidation` hook
 2. **api/transactions.ts** - Unified error handling pattern
 3. **Button.scss** - Removed duplicate styles (↓ 45 lines)
 
 ### Bugs Fixed
+
 - Fixed null reference error in Dashboard (missing optional chaining)
 - Resolved memory leak in useEffect (added cleanup function)
 
@@ -271,11 +306,11 @@ All 10 skills available for validation:
 
 ## 🔍 Decisions Made
 
-| Decision | Type | Resolution |
-|----------|------|------------|
-| Keep legacy `dateFormatter` | Asked User | Deferred migration (used in 12 places) |
-| Fix validation logic in RegisterForm | Auto-Fixed | Clear bug, no business logic change |
-| Update test snapshots | Auto-Fixed | UI intentionally changed |
+| Decision                             | Type       | Resolution                             |
+| ------------------------------------ | ---------- | -------------------------------------- |
+| Keep legacy `dateFormatter`          | Asked User | Deferred migration (used in 12 places) |
+| Fix validation logic in RegisterForm | Auto-Fixed | Clear bug, no business logic change    |
+| Update test snapshots                | Auto-Fixed | UI intentionally changed               |
 
 ---
 
@@ -314,7 +349,7 @@ A successful QA pass delivers:
 ✅ **All standards met** - ESLint, TypeScript, tests, builds passing  
 ✅ **Cleaner code** - Refactored, maintainable, follows best practices  
 ✅ **Complete report** - Metrics, changes, decisions, remaining issues  
-✅ **Zero breaking changes** - Behavior preserved unless approved  
+✅ **Zero breaking changes** - Behavior preserved unless approved
 
 </output_expectations>
 

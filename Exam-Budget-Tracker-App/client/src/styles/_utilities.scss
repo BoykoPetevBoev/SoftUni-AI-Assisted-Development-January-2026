@@ -1,9 +1,11 @@
+@use './variables' as *;
+
 // ============================================================================
 // Reusable SCSS Utilities and Helpers
 // ============================================================================
 // Utility classes and common patterns used across components
 
-@import './variables';
+@forward './variables';
 
 // ============================================================================
 // Layout Utilities
@@ -172,6 +174,7 @@
   &--error { color: $color-error; }
   &--warning { color: $color-warning; }
   &--info { color: $color-info; }
+  &--gold { color: $color-primary; }
 
   &--center { text-align: center; }
   &--left { text-align: left; }
@@ -182,7 +185,10 @@
   &--semibold { font-weight: $font-weight-semibold; }
   &--bold { font-weight: $font-weight-bold; }
 
-  &--truncate { @include truncate; }
+  &--truncate { @include text-truncate; }
+  &--uppercase { text-transform: uppercase; }
+  &--lowercase { text-transform: lowercase; }
+  &--capitalize { text-transform: capitalize; }
 }
 
 // ============================================================================

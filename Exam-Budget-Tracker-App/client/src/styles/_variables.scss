@@ -1,55 +1,57 @@
 // ============================================================================
-// Design System Variables
+// Design System Variables - LIGHT THEME
 // ============================================================================
 // Colors, typography, spacing, and other design tokens
 
-// Color Palette - Modern Luxury Dark Theme
-// Primary brand colors (Gold luxury accent)
-$color-primary: #d4af37;
-$color-primary-hover: #e8c547;
-$color-primary-light: rgba(212, 175, 55, 0.15);
+// Color Palette - Clean Light Theme
+// Primary colors (Blue for interactive elements)
+$color-primary: #0066cc;
+$color-primary-hover: #0052a3;
+$color-primary-light: rgba(0, 102, 204, 0.1);
 
-// Secondary colors (Emerald green for prosperity)
-$color-secondary: #2ecc71;
-$color-secondary-hover: #27ae60;
-$color-secondary-light: rgba(46, 204, 113, 0.15);
+// Accent color (Yellow for important/clickable)
+$color-accent: #ffc107;
+$color-accent-hover: #ffb300;
+$color-accent-light: rgba(255, 193, 7, 0.15);
 
-// Neutral colors (dark mode palette)
-$color-text-primary: #e8eef7;
-$color-text-secondary: #9ca3af;
-$color-text-tertiary: #6b7280;
+// Neutral colors (light backgrounds)
+$color-text-primary: #1a1a1a;
+$color-text-secondary: #666666;
+$color-text-tertiary: #999999;
 
-// Semantic colors (adjusted for dark theme)
-$color-success: #10b981;
-$color-error: #ff6b6b;
-$color-warning: #fbbf24;
-$color-info: #60a5fa;
+// Semantic colors
+$color-success: #28a745;
+$color-success-hover: #218838;
+$color-error: #dc3545;
+$color-error-hover: #c82333;
+$color-warning: #ffc107;
+$color-info: #17a2b8;
 
-// Background colors (luxury dark)
-$color-bg-primary: #0a0e27;
-$color-bg-secondary: #141829;
-$color-bg-tertiary: #1a1f3a;
-$color-bg-card: #1a1f3a;
-$color-bg-hover: #252e4a;
+// Background colors (light theme)
+$color-bg-primary: #ffffff;
+$color-bg-secondary: #f8f9fa;
+$color-bg-tertiary: #f0f2f5;
+$color-bg-card: #ffffff;
+$color-bg-hover: #f8f9fa;
 
-// Border colors (dark theme borders)
-$color-border-light: #2a3550;
-$color-border-default: #3a4560;
-$color-border-dark: #4a5570;
-$color-border-accent: #d4af37;
+// Border colors (light theme)
+$color-border-light: #e0e0e0;
+$color-border-default: #d0d0d0;
+$color-border-dark: #c0c0c0;
+$color-border-accent: #0066cc;
 
-// Text colors for dark mode
-$color-dark-bg: #0a0e27;
-$color-dark-text: #e8eef7;
+// Icon color (single color - primary blue)
+$color-icon: #0066cc;
+$color-icon-hover: #0052a3;
 
-// Gradients (luxury gold and emerald)
-$gradient-luxury: linear-gradient(135deg, #d4af37 0%, #2ecc71 100%);
-$gradient-dark-hero: linear-gradient(135deg, #1a1f3a 0%, #141829 100%);
-$gradient-gold-accent: linear-gradient(135deg, #d4af37 0%, #e8c547 100%);
+// Text colors for light mode
+$color-light-bg: #ffffff;
+$color-light-text: #1a1a1a;
 
-// Glassmorphism effect colors
-$color-glass-bg: rgba(26, 31, 58, 0.7);
-$color-glass-border: rgba(212, 175, 55, 0.2);
+// Gradients (subtle for light theme)
+$gradient-primary: linear-gradient(135deg, #0066cc 0%, #0080ff 100%);
+$gradient-accent: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+$gradient-light-bg: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
 
 // Typography
 $font-family-base: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -180,4 +182,51 @@ $breakpoint-xl: 1280px;
 // Smooth transitions
 @mixin smooth-transition($properties...) {
   transition: $properties $transition-base $transition-ease;
+}
+// Glass card styles (Light theme - simple cards)
+@mixin glass-card {
+  background: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+}
+
+// Button reset
+@mixin button-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+
+// Text truncation
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Container max width with padding
+@mixin container-max {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+  
+  @include respond-to('sm') {
+    padding: 0 $container-padding-mobile;
+  }
+}
+
+// Layout mixins
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

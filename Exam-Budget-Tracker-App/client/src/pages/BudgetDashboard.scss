@@ -1,25 +1,34 @@
-@import '../styles/variables';
+@use '../styles/variables' as *;
 
 .budget-dashboard {
   min-height: 100vh;
-  background: $gradient-dark-hero;
-  padding: $spacing-2xl $spacing-lg;
+  background: $gradient-light-bg;
+  padding-top: $spacing-3xl;
+  padding-left: $spacing-lg;
+  padding-right: $spacing-lg;
+  padding-bottom: $spacing-3xl;
 
   &__container {
-    max-width: $container-max-width;
-    margin: 0 auto;
+    @include container-max;
   }
 }
 
 // Responsive design
 @media (max-width: 768px) {
   .budget-dashboard {
-    padding: $spacing-xl $spacing-md;
+    padding-top: $spacing-2xl;
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+    padding-bottom: $spacing-2xl;
   }
 }
 
 @media (max-width: 640px) {
   .budget-dashboard {
-    padding: $spacing-lg $spacing-sm;
+    padding-top: $spacing-xl;
+    padding-left: $spacing-sm;
+    padding-right: $spacing-sm;
+    padding-bottom: $spacing-xl;
   }
 }
+

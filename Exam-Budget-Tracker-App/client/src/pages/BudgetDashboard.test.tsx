@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '../context/ToastContext';
 import { BudgetDashboard } from './BudgetDashboard';
@@ -24,7 +25,9 @@ const queryClient = new QueryClient({
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
-    <ToastProvider>{children}</ToastProvider>
+    <BrowserRouter>
+      <ToastProvider>{children}</ToastProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 

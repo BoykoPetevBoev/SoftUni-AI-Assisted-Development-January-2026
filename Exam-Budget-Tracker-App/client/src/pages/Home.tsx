@@ -1,23 +1,10 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
+import { Header } from '../components/Header';
 import './Home.scss';
 
 export const Home: React.FC = () => {
-  const { user, logout } = useAuth();
-  const { showSuccess } = useToast();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      showSuccess('Logged out successfully');
-      navigate('/login');
-    } catch {
-      // Logout errors are handled in AuthContext
-    }
-  };
+  const { user } = useAuth();
 
   // Mock data for demonstration
   const balance = 5250.75;
@@ -26,20 +13,7 @@ export const Home: React.FC = () => {
 
   return (
     <div className="home-page">
-      <header className="home-header">
-        <div className="home-container">
-          <div className="home-header__content">
-            <h1 className="home-logo">💰 Budget Tracker</h1>
-            <nav className="home-nav">
-              <Link to="/" className="home-nav__link home-nav__link--active">Home</Link>
-              <Link to="/budgets" className="home-nav__link">Budgets</Link>
-            </nav>
-          </div>
-          <button onClick={handleLogout} className="btn btn-outline">
-            Logout
-          </button>
-        </div>
-      </header>
+      <Header />
 
       <main className="home-main">
         <div className="home-container">

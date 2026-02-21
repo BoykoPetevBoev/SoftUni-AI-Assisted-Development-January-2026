@@ -1,4 +1,4 @@
 // Import design system and base styles
-@import './styles/variables';
-@import './styles/base';
-@import './styles/utilities';
+@use './styles/variables' as *;
+@use './styles/base' as *;
+@use './styles/utilities' as *;

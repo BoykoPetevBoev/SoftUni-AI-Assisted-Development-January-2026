@@ -1,0 +1,159 @@
+@use '../../styles/utilities' as *;
+
+.budget-card {
+  background: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  @include smooth-transition(transform, box-shadow, border-color);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 102, 204, 0.03) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: $color-primary;
+    transform: translateY(-2px);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-md;
+    gap: $spacing-md;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    flex: 1;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid transparent;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    @include smooth-transition(background-color, box-shadow, transform);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &--edit {
+      background: $gradient-primary;
+      color: #ffffff;
+      border-color: $color-primary;
+      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.15);
+
+      &:hover:not(:disabled) {
+        background: $color-primary-hover;
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
+        transform: translateY(-1px);
+      }
+    }
+
+    &--delete {
+      background: transparent;
+      color: $color-error;
+      border: 1px solid $color-error;
+
+      &:hover:not(:disabled) {
+        background: rgba(220, 53, 69, 0.1);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.15);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &:focus,
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
+  &__description {
+    margin: 0 0 $spacing-md 0;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    line-height: $line-height-normal;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: $spacing-md;
+    border-top: 1px solid $color-border-light;
+  }
+
+  &__meta {
+    display: flex;
+    gap: $spacing-lg;
+    font-size: $font-size-sm;
+  }
+
+  &__date {
+    color: $color-text-tertiary;
+  }
+
+  &__amount {
+    font-weight: $font-weight-semibold;
+    color: $color-primary;
+    font-size: $font-size-md;
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .budget-card {
+    padding: $spacing-lg;
+
+    &__header {
+      flex-direction: column;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    &__btn {
+      flex: 1;
+
+      &:not(:last-child) {
+        margin-right: 4px;
+      }
+    }
+
+    &__meta {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+}

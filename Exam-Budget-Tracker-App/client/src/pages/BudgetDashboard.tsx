@@ -1,4 +1,5 @@
 import React from 'react';
+import { Header } from '../components/Header';
 import { BudgetListContainer } from '../components/BudgetListContainer';
 import { BudgetForm } from '../components/BudgetForm';
 import { useBudgetDashboard } from '../hooks/useBudgetDashboard';
@@ -15,6 +16,7 @@ export const BudgetDashboard: React.FC = () => {
 
   return (
     <div className="budget-dashboard">
+      <Header />
       <div className="budget-dashboard__container">
         <BudgetListContainer onCreateClick={openCreateForm} onEditClick={openEditForm} />
       </div>

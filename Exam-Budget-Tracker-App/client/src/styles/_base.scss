@@ -3,7 +3,7 @@
 // ============================================================================
 // HTML element defaults and global styles
 
-@import './variables';
+@use './utilities' as *;
 
 // Reset and normalize
 * {
@@ -22,7 +22,7 @@ body {
   font-weight: $font-weight-normal;
   line-height: $line-height-normal;
   color: $color-text-primary;
-  background-color: $color-bg-primary;
+  background-color: $color-bg-secondary;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -124,6 +124,10 @@ select {
 input,
 textarea {
   background-color: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $border-radius-md;
+  color: inherit;
 }
 
 // ============================================================================

@@ -1,7 +1,7 @@
-@import '../styles/variables';
+@use '../styles/variables' as *;
 
 // ============================================================================
-// Register Page Styles - Luxury Dark Theme
+// Register Page Styles - Clean Light Theme
 // ============================================================================
 
 .register-page {
@@ -9,44 +9,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0a0e27 0%, #141829 50%, #1a1f3a 100%);
+  background: $gradient-light-bg;
   padding: $spacing-lg;
   position: relative;
   overflow: hidden;
-
-  // Decorative background elements
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: float 6s ease-in-out infinite;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -50%;
-    left: -10%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: float 8s ease-in-out infinite reverse;
-  }
 }
 
-// Register card container with glassmorphism
+// Register card container
 .register-card {
-  background: $color-glass-bg;
-  backdrop-filter: blur(10px);
-  border: 1px solid $color-glass-border;
-  border-radius: $border-radius-xl;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: $spacing-2xl $spacing-xl * 1.25;
   width: 100%;
   max-width: 450px;
@@ -55,6 +29,7 @@
 
   @include respond-to('sm') {
     padding: $spacing-xl;
+    max-width: 100%;
   }
 }
 
@@ -64,14 +39,11 @@
   margin-bottom: $spacing-2xl;
 }
 
-// Title with gradient
+// Title
 .register-title {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  background: $gradient-gold-accent;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: $color-primary;
   margin: 0 0 $spacing-sm 0;
 
   @include respond-to('sm') {

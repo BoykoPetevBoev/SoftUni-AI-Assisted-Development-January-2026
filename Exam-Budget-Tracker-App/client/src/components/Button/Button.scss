@@ -1,0 +1,90 @@
+@use '../../styles/utilities' as *;
+
+// ============================================================================
+// Button Component Styles - Luxury Dark Theme
+// ============================================================================
+
+.btn {
+  padding: $spacing-md $spacing-lg;
+  border: 1px solid transparent;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  @include smooth-transition(all);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  font-family: $font-family-base;
+
+  // Hover and active states
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  // Disabled state
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Focus state
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  // Primary variant (Blue)
+  &.btn-primary {
+    background: $gradient-primary;
+    color: #ffffff;
+    border-color: $color-primary;
+    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+
+    &:hover:not(:disabled) {
+      background: $color-primary-hover;
+      box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2);
+    }
+  }
+
+  // Secondary variant (Yellow/Accent for CTAs)
+  &.btn-secondary {
+    background: $gradient-accent;
+    color: #000000;
+    border: 1px solid $color-accent;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+
+    &:hover:not(:disabled) {
+      background: $color-accent-hover;
+      border-color: $color-accent-hover;
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+  }
+
+  // Outline variant (Blue border)
+  &.btn-outline {
+    background: transparent;
+    border: 1px solid $color-primary;
+    color: $color-primary;
+
+    &:hover:not(:disabled) {
+      background: $color-primary-light;
+      box-shadow: 0 2px 6px rgba(0, 102, 204, 0.15);
+    }
+  }
+
+  // Full width variant
+  &.btn-full {
+    width: 100%;
+  }
+}

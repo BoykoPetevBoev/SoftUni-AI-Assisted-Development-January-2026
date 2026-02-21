@@ -1,0 +1,131 @@
+@use '../../styles/utilities' as *;
+
+// ============================================================================
+// Toast Component Styles - Luxury Dark Theme
+// ============================================================================
+
+.toast-container {
+  position: fixed;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  z-index: $z-index-toast;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  max-width: 400px;
+  width: 100%;
+  pointer-events: none;
+
+  @include respond-to('sm') {
+    right: $spacing-sm;
+    left: $spacing-sm;
+    max-width: none;
+  }
+}
+
+// Individual toast notification
+.toast {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-md;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-left: 4px solid;
+  animation: slideInRight $transition-slow $transition-ease-out;
+  pointer-events: auto;
+
+  // Status variants
+  &.toast--success {
+    border-left-color: $color-success;
+    border-color: rgba(16, 185, 129, 0.3);
+
+    .toast__icon {
+      color: $color-success;
+    }
+  }
+
+  &.toast--error {
+    border-left-color: $color-error;
+    border-color: rgba(255, 107, 107, 0.3);
+
+    .toast__icon {
+      color: $color-error;
+    }
+  }
+
+  &.toast--warning {
+    border-left-color: $color-warning;
+    border-color: rgba(251, 191, 36, 0.3);
+
+    .toast__icon {
+      color: $color-warning;
+    }
+  }
+
+  &.toast--info {
+    border-left-color: $color-info;
+    border-color: rgba(96, 165, 250, 0.3);
+
+    .toast__icon {
+      color: $color-info;
+    }
+  }
+}
+
+// Toast icon
+.toast__icon {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Toast message
+.toast__message {
+  flex: 1;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+  color: $color-text-primary;
+}
+
+// Toast close button
+.toast__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xs;
+  color: $color-text-secondary;
+  font-size: $font-size-lg;
+  line-height: 1;
+  flex-shrink: 0;
+  @include smooth-transition(color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: $color-primary;
+  }
+
+  &:focus,
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// Toast animation
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
