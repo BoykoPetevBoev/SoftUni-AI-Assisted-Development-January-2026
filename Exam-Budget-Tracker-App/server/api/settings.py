@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'health_check',
     'users',
     'budgets',
+    'transactions',
 ]
 
 MIDDLEWARE = [

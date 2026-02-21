@@ -1,12 +1,28 @@
+from decimal import Decimal
+
+from django.db.models import Sum
 from rest_framework import serializers
+
 from .models import Budget
 
 
 class BudgetSerializer(serializers.ModelSerializer):
+    balance = serializers.SerializerMethodField()
+
     class Meta:
         model = Budget
-        fields = ['id', 'user', 'title', 'description', 'date', 'initial_amount', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'user', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'user',
+            'title',
+            'description',
+            'date',
+            'initial_amount',
+            'balance',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'user', 'balance', 'created_at', 'updated_at']
         extra_kwargs = {
             'title': {
                 'error_messages': {
@@ -47,3 +63,12 @@ class BudgetSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError('Date is required.')
         return value
+
+    def get_balance(self, obj):
+        total = getattr(obj, 'transactions_total', None)
+        if total is None:
+            total = obj.transactions.aggregate(total=Sum('amount')).get('total')
+        if total is None:
+            total = Decimal('0.00')
+        balance = obj.initial_amount + total
+        return str(balance.quantize(Decimal('0.01')))
