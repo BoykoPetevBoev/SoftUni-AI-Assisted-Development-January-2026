@@ -7,6 +7,7 @@ export interface Budget {
   description: string;
   date: string;
   initial_amount: string;
+  balance: string;
   created_at: string;
   updated_at: string;
 }

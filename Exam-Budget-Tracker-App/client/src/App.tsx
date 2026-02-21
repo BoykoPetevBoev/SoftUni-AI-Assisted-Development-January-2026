@@ -6,6 +6,8 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { BudgetDashboard } from './pages/BudgetDashboard';
+import { BudgetDetails } from './pages/BudgetDetails';
+import { Account } from './pages/Account';
 import './App.scss';
 
 function App() {
@@ -17,9 +19,7 @@ function App() {
             <Route
               path="/"
               element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
+                <Home />
               }
             />
             <Route
@@ -27,6 +27,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BudgetDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/budgets/:budgetId"
+              element={
+                <ProtectedRoute>
+                  <BudgetDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/account"
+              element={
+                <ProtectedRoute>
+                  <Account />
                 </ProtectedRoute>
               }
             />

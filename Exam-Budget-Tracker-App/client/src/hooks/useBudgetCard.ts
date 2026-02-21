@@ -5,6 +5,7 @@ interface UseBudgetCardResult {
   formattedDate: string;
   formattedAmount: string;
   description: string | null;
+  amountTone: 'positive' | 'negative' | 'neutral';
 }
 
 export const useBudgetCard = (budget: Budget): UseBudgetCardResult => {
@@ -16,10 +17,21 @@ export const useBudgetCard = (budget: Budget): UseBudgetCardResult => {
       day: 'numeric',
     });
 
+    const balanceAmount = parseFloat(budget.balance);
+    const initialAmount = parseFloat(budget.initial_amount);
     const formattedAmount = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-    }).format(parseFloat(budget.initial_amount));
+    }).format(balanceAmount);
+
+    let amountTone: UseBudgetCardResult['amountTone'] = 'neutral';
+    if (!Number.isNaN(balanceAmount) && !Number.isNaN(initialAmount)) {
+      if (balanceAmount > initialAmount) {
+        amountTone = 'positive';
+      } else if (balanceAmount < initialAmount) {
+        amountTone = 'negative';
+      }
+    }
 
     const description = budget.description
       ? budget.description.length > 100
@@ -31,6 +43,7 @@ export const useBudgetCard = (budget: Budget): UseBudgetCardResult => {
       formattedDate,
       formattedAmount,
       description,
+      amountTone,
     };
   }, [budget]);
 };

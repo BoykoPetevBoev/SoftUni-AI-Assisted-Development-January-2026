@@ -1,0 +1,65 @@
+@use '../styles/variables' as *;
+
+.account-page {
+  min-height: 100vh;
+  background: $gradient-light-bg;
+  padding-top: 0;
+  padding-bottom: $spacing-3xl;
+}
+
+.account-main {
+  padding: $spacing-3xl $container-padding;
+
+  @include respond-to('sm') {
+    padding: $spacing-2xl $container-padding-mobile;
+  }
+}
+
+.account-container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+}
+
+.user-info-card {
+  background: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  @include smooth-transition(all);
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: $color-primary;
+  }
+}
+
+.card-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 0 0 $spacing-lg 0;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $color-border-light;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+}
+
+.info-value {
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
