@@ -1,0 +1,213 @@
+@use '../../styles/utilities' as *;
+
+.transaction-list {
+  width: 100%;
+
+  &__loading {
+    @include flex-column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-3xl $spacing-xl;
+    text-align: center;
+
+    p {
+      color: $color-text-secondary;
+      font-size: $font-size-md;
+      margin-top: $spacing-md;
+    }
+  }
+
+  &__error {
+    padding: $spacing-2xl $spacing-xl;
+    text-align: center;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: $border-radius-lg;
+    border: 1px solid $color-error;
+  }
+
+  &__error-message {
+    color: $color-error;
+    font-size: $font-size-base;
+    margin: 0 0 $spacing-md 0;
+  }
+
+  &__retry-btn {
+    padding: $spacing-md $spacing-xl;
+    background: transparent;
+    color: $color-error;
+    border: 1px solid $color-error;
+    border-radius: $border-radius-md;
+    cursor: pointer;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    @include smooth-transition(background-color, color);
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 107, 107, 0.12);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: $spacing-lg;
+    gap: $spacing-lg;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  &__count {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+
+  &__grid {
+    display: grid;
+    gap: $spacing-lg;
+  }
+
+  &__empty {
+    @include flex-column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-3xl $spacing-xl;
+    text-align: center;
+  }
+
+  &__empty-message {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin: 0 0 $spacing-sm 0;
+  }
+
+  &__empty-description {
+    font-size: $font-size-base;
+    color: $color-text-secondary;
+    margin: 0;
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid $color-border-light;
+  border-top: 3px solid $color-primary;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.delete-confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: $z-index-fixed;
+  @include flex-center;
+  padding: $spacing-lg;
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 39, 0.75);
+    cursor: pointer;
+  }
+
+  &__content {
+    position: relative;
+    background: $color-bg-card;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-lg;
+    max-width: 420px;
+    width: 100%;
+    padding: $spacing-xl;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-md 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  &__message {
+    margin: 0 0 $spacing-xl 0;
+    color: $color-text-secondary;
+    font-size: $font-size-base;
+    line-height: $line-height-normal;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-md;
+  }
+
+  &__btn {
+    flex: 1;
+    padding: $spacing-md $spacing-lg;
+    border: 1px solid transparent;
+    border-radius: $border-radius-md;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    @include smooth-transition(background-color, color, transform);
+
+    &--cancel {
+      background: transparent;
+      color: $color-text-secondary;
+      border: 1px solid $color-border-light;
+
+      &:hover:not(:disabled) {
+        background: $color-bg-hover;
+        color: $color-text-primary;
+      }
+    }
+
+    &--confirm {
+      background: $color-error;
+      color: #ffffff;
+
+      &:hover:not(:disabled) {
+        background: #ff5252;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .transaction-list {
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}

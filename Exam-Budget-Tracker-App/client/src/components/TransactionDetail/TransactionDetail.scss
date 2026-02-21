@@ -1,0 +1,115 @@
+@use '../../styles/utilities' as *;
+
+.transaction-detail {
+  background: $color-bg-primary;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+
+  &--empty {
+    align-items: flex-start;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  &__empty-text {
+    margin: 0;
+    color: $color-text-secondary;
+    font-size: $font-size-base;
+  }
+
+  &__summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-lg;
+    padding: $spacing-lg;
+    background: $color-bg-secondary;
+    border-radius: $border-radius-md;
+  }
+
+  &__category {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  &__amount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $spacing-xs;
+
+    &--income {
+      color: $color-success;
+    }
+
+    &--expense {
+      color: $color-error;
+    }
+  }
+
+  &__amount-label {
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__amount-value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__list {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+
+    dt {
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+
+    dd {
+      margin: 0;
+      color: $color-text-secondary;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .transaction-detail {
+    &__summary {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__amount {
+      align-items: flex-start;
+    }
+
+    &__row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-xs;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { BudgetCard } from '../BudgetCard';
 import type { Budget } from '../../types/budget';
@@ -11,6 +12,7 @@ const mockBudget: Budget = {
   description: 'My monthly budget',
   date: '2026-02-15',
   initial_amount: '5000.00',
+  balance: '4750.00',
   created_at: '2026-02-15T10:00:00Z',
   updated_at: '2026-02-15T10:00:00Z',
 };
@@ -19,56 +21,71 @@ describe('BudgetCard', () => {
   const mockOnEdit = vi.fn();
   const mockOnDelete = vi.fn();
 
+  const renderCard = () =>
+    render(
+      <MemoryRouter>
+        <BudgetCard
+          budget={mockBudget}
+          onEdit={mockOnEdit}
+          onDelete={mockOnDelete}
+        />
+      </MemoryRouter>
+    );
+
   afterEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders budget information', () => {
-    render(
-      <BudgetCard
-        budget={mockBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
-    );
+    renderCard();
 
     expect(screen.getByText('Monthly Budget')).toBeInTheDocument();
     expect(screen.getByText('My monthly budget')).toBeInTheDocument();
   });
 
   it('formats and displays amount correctly', () => {
+    renderCard();
+
+    expect(screen.getByText('$4,750.00')).toBeInTheDocument();
+  });
+
+  it('shows negative balance in red when below initial amount', () => {
+    renderCard();
+
+    const amount = screen.getByText('$4,750.00');
+    expect(amount).toHaveClass('budget-card__amount--negative');
+  });
+
+  it('shows positive balance in green when above initial amount', () => {
+    const higherBudget: Budget = {
+      ...mockBudget,
+      initial_amount: '5000.00',
+      balance: '6200.00',
+    };
+
     render(
-      <BudgetCard
-        budget={mockBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemoryRouter>
+        <BudgetCard
+          budget={higherBudget}
+          onEdit={mockOnEdit}
+          onDelete={mockOnDelete}
+        />
+      </MemoryRouter>
     );
 
-    expect(screen.getByText('$5,000.00')).toBeInTheDocument();
+    const amount = screen.getByText('$6,200.00');
+    expect(amount).toHaveClass('budget-card__amount--positive');
   });
 
   it('formats and displays date correctly', () => {
-    render(
-      <BudgetCard
-        budget={mockBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
-    );
+    renderCard();
 
     expect(screen.getByText('Feb 15, 2026')).toBeInTheDocument();
   });
 
   it('calls onEdit when edit button is clicked', async () => {
     const user = userEvent.setup();
-    render(
-      <BudgetCard
-        budget={mockBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
-    );
+    renderCard();
 
     const editButton = screen.getByRole('button', { name: /edit budget/i });
     await user.click(editButton);
@@ -78,13 +95,7 @@ describe('BudgetCard', () => {
 
   it('calls onDelete when delete button is clicked', async () => {
     const user = userEvent.setup();
-    render(
-      <BudgetCard
-        budget={mockBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
-    );
+    renderCard();
 
     const deleteButton = screen.getByRole('button', { name: /delete budget/i });
     await user.click(deleteButton);
@@ -99,11 +110,13 @@ describe('BudgetCard', () => {
     };
 
     render(
-      <BudgetCard
-        budget={longBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemoryRouter>
+        <BudgetCard
+          budget={longBudget}
+          onEdit={mockOnEdit}
+          onDelete={mockOnDelete}
+        />
+      </MemoryRouter>
     );
 
     const text = screen.getByText(/^A{100}\.\.\.$/);
@@ -114,14 +127,23 @@ describe('BudgetCard', () => {
     const noBudget: Budget = { ...mockBudget, description: '' };
 
     const { container } = render(
-      <BudgetCard
-        budget={noBudget}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemoryRouter>
+        <BudgetCard
+          budget={noBudget}
+          onEdit={mockOnEdit}
+          onDelete={mockOnDelete}
+        />
+      </MemoryRouter>
     );
 
     const description = container.querySelector('.budget-card__description');
     expect(description).not.toBeInTheDocument();
+  });
+
+  it('links to the budget details page', () => {
+    renderCard();
+
+    const link = screen.getByRole('link', { name: /view budget monthly budget/i });
+    expect(link).toHaveAttribute('href', `/budgets/${mockBudget.id}`);
   });
 });

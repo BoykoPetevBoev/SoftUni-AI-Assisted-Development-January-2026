@@ -44,6 +44,21 @@
     flex: 1;
   }
 
+  &__link {
+    color: inherit;
+    text-decoration: none;
+    @include smooth-transition(color);
+
+    &:hover {
+      color: $color-primary;
+    }
+
+    &:focus,
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
   &__actions {
     display: flex;
     gap: $spacing-sm;
@@ -126,6 +141,13 @@
     font-weight: $font-weight-semibold;
     color: $color-primary;
     font-size: $font-size-md;
+    &--positive {
+      color: $color-success;
+    }
+
+    &--negative {
+      color: $color-error;
+    }
   }
 }
 

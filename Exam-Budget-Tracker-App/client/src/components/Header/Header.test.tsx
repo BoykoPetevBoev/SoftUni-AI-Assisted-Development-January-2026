@@ -6,10 +6,10 @@ import { AuthProvider } from '../../context/AuthContext';
 import { ToastProvider } from '../../context/ToastContext';
 import { Header } from '.';
 
-vi.mock('../hooks/useAuth', () => ({
-  useAuth: () => ({
-    logout: vi.fn().mockResolvedValue(undefined),
-  }),
+const mockUseAuth = vi.fn();
+
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: () => mockUseAuth(),
 }));
 
 vi.mock('../hooks/useToast', () => ({
@@ -42,30 +42,55 @@ const renderHeader = () => {
 
 describe('Header Component', () => {
   it('renders the logo', () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: false,
+      logout: vi.fn().mockResolvedValue(undefined),
+    });
     renderHeader();
-    const logo = screen.getByText('💰 Budget Tracker');
+    const logo = screen.getByText('💶 Budget Tracker');
     expect(logo).toBeInTheDocument();
   });
 
-  it('renders navigation links', () => {
+  it('renders guest navigation links', () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: false,
+      logout: vi.fn().mockResolvedValue(undefined),
+    });
     renderHeader();
     const homeLink = screen.getByRole('link', { name: /home/i });
-    const budgetsLink = screen.getByRole('link', { name: /budgets/i });
     expect(homeLink).toBeInTheDocument();
-    expect(budgetsLink).toBeInTheDocument();
   });
 
-  it('renders logout button', () => {
+  it('hides logout button for guests', () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: false,
+      logout: vi.fn().mockResolvedValue(undefined),
+    });
     renderHeader();
-    const logoutButton = screen.getByRole('button', { name: /logout/i });
-    expect(logoutButton).toBeInTheDocument();
+    const logoutButton = screen.queryByRole('button', { name: /logout/i });
+    expect(logoutButton).not.toBeInTheDocument();
   });
 
   it('has correct navigation link hrefs', () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: false,
+      logout: vi.fn().mockResolvedValue(undefined),
+    });
     renderHeader();
     const homeLink = screen.getByRole('link', { name: /home/i });
-    const budgetsLink = screen.getByRole('link', { name: /budgets/i });
     expect(homeLink).toHaveAttribute('href', '/');
-    expect(budgetsLink).toHaveAttribute('href', '/budgets');
+  });
+
+  it('shows authenticated navigation links', () => {
+    mockUseAuth.mockReturnValue({
+      isAuthenticated: true,
+      logout: vi.fn().mockResolvedValue(undefined),
+    });
+    renderHeader();
+
+    expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /budgets/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /account/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument();
   });
 });

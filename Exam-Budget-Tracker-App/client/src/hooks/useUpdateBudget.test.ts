@@ -20,6 +20,7 @@ const mockBudget: Budget = {
   description: 'Test budget',
   date: '2026-02-15',
   initial_amount: '6000.00',
+  balance: '6000.00',
   created_at: '2026-02-15T10:00:00Z',
   updated_at: '2026-02-15T10:00:00Z',
 };

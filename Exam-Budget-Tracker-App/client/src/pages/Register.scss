@@ -7,12 +7,32 @@
 .register-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: $gradient-light-bg;
-  padding: $spacing-lg;
+  flex-direction: column;
+  background: $color-primary;
+  padding: 0;
   position: relative;
   overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.2), transparent 45%),
+      radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.15), transparent 45%),
+      linear-gradient(180deg, rgba(0, 102, 204, 1) 0%, rgba(0, 76, 153, 1) 100%);
+    z-index: 0;
+  }
+}
+
+.register-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-lg;
+  position: relative;
+  z-index: 1;
 }
 
 // Register card container

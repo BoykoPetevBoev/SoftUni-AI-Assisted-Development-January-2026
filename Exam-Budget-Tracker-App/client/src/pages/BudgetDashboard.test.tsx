@@ -13,7 +13,10 @@ vi.mock('../components/BudgetListContainer', () => ({
 }));
 
 vi.mock('../hooks/useAuth', () => ({
-  useAuth: () => ({ isAuthenticated: true }),
+  useAuth: () => ({
+    user: { username: 'TestTest1' },
+    isAuthenticated: true,
+  }),
 }));
 
 const queryClient = new QueryClient({

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { BudgetListContainer } from '../BudgetListContainer';
 import * as useBudgetListModule from '../../hooks/useBudgetList';
 import type { Budget } from '../../types/budget';
@@ -12,6 +13,7 @@ const mockBudgets: Budget[] = [
     description: 'Test budget',
     date: '2026-02-15',
     initial_amount: '5000.00',
+    balance: '5000.00',
     created_at: '2026-02-15T10:00:00Z',
     updated_at: '2026-02-15T10:00:00Z',
   },
@@ -39,7 +41,9 @@ describe('BudgetListContainer', () => {
     });
 
     render(
-      <BudgetListContainer onEditClick={onEditClick} onCreateClick={onCreateClick} />
+      <MemoryRouter>
+        <BudgetListContainer onEditClick={onEditClick} onCreateClick={onCreateClick} />
+      </MemoryRouter>
     );
 
     expect(screen.getByText('Your Budgets')).toBeInTheDocument();

@@ -1,10 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { MemoryRouter } from 'react-router-dom';
 import { BudgetList } from '../BudgetList';
 import type { Budget } from '../../types/budget';
 
 const meta = {
   title: 'Components/BudgetList',
   component: BudgetList,
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   parameters: {
     layout: 'padded',
   },
@@ -22,6 +30,7 @@ const mockBudgets: Budget[] = [
     description: 'My monthly household budget for February 2026',
     date: '2026-02-01',
     initial_amount: '5000.00',
+    balance: '4750.00',
     created_at: '2026-02-01T10:00:00Z',
     updated_at: '2026-02-01T10:00:00Z',
   },
@@ -32,6 +41,7 @@ const mockBudgets: Budget[] = [
     description: 'Annual budget planning for the entire year',
     date: '2026-01-01',
     initial_amount: '50000.00',
+    balance: '50000.00',
     created_at: '2026-01-01T10:00:00Z',
     updated_at: '2026-01-01T10:00:00Z',
   },
@@ -42,6 +52,7 @@ const mockBudgets: Budget[] = [
     description: '',
     date: '2026-02-15',
     initial_amount: '10000.00',
+    balance: '9800.00',
     created_at: '2026-02-15T10:00:00Z',
     updated_at: '2026-02-15T10:00:00Z',
   },

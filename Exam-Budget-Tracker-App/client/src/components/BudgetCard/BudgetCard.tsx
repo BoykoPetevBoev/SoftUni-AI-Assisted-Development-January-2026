@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import type { Budget } from '../../types/budget';
 import { useBudgetCard } from '../../hooks/useBudgetCard';
 import './BudgetCard.scss';
@@ -10,12 +11,20 @@ interface BudgetCardProps {
 }
 
 export const BudgetCard: React.FC<BudgetCardProps> = ({ budget, onEdit, onDelete }) => {
-  const { formattedDate, formattedAmount, description } = useBudgetCard(budget);
+  const { formattedDate, formattedAmount, description, amountTone } = useBudgetCard(budget);
 
   return (
     <div className="budget-card">
       <div className="budget-card__header">
-        <h3 className="budget-card__title">{budget.title}</h3>
+        <h3 className="budget-card__title">
+          <Link
+            to={`/budgets/${budget.id}`}
+            className="budget-card__link"
+            aria-label={`View budget ${budget.title}`}
+          >
+            {budget.title}
+          </Link>
+        </h3>
         <div className="budget-card__actions">
           <button
             className="budget-card__btn budget-card__btn--edit"
@@ -39,7 +48,9 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({ budget, onEdit, onDelete
       <div className="budget-card__footer">
         <div className="budget-card__meta">
           <span className="budget-card__date">{formattedDate}</span>
-          <span className="budget-card__amount">{formattedAmount}</span>
+          <span className={`budget-card__amount budget-card__amount--${amountTone}`}>
+            {formattedAmount}
+          </span>
         </div>
       </div>
     </div>

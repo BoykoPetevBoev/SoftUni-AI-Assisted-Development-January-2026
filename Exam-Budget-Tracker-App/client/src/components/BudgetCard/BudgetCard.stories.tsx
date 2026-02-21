@@ -1,10 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { MemoryRouter } from 'react-router-dom';
 import { BudgetCard } from '../BudgetCard';
 import type { Budget } from '../../types/budget';
 
 const meta = {
   title: 'Components/BudgetCard',
   component: BudgetCard,
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   parameters: {
     layout: 'centered',
   },
@@ -21,6 +29,7 @@ const mockBudget: Budget = {
   description: 'My monthly household budget for February 2026',
   date: '2026-02-01',
   initial_amount: '5000.00',
+  balance: '4750.00',
   created_at: '2026-02-01T10:00:00Z',
   updated_at: '2026-02-01T10:00:00Z',
 };
@@ -53,7 +62,33 @@ export const WithoutDescription: Story = {
 
 export const LargeAmount: Story = {
   args: {
-    budget: { ...mockBudget, initial_amount: '999999999.99' },
+    budget: { ...mockBudget, initial_amount: '999999999.99', balance: '1000000000.00' },
+    onEdit: (id) => console.log('Edit budget:', id),
+    onDelete: (id) => console.log('Delete budget:', id),
+  },
+  render: (args) => (
+    <div style={{ maxWidth: '400px' }}>
+      <BudgetCard {...args} />
+    </div>
+  ),
+};
+
+export const BelowInitial: Story = {
+  args: {
+    budget: { ...mockBudget, initial_amount: '5000.00', balance: '4200.00' },
+    onEdit: (id) => console.log('Edit budget:', id),
+    onDelete: (id) => console.log('Delete budget:', id),
+  },
+  render: (args) => (
+    <div style={{ maxWidth: '400px' }}>
+      <BudgetCard {...args} />
+    </div>
+  ),
+};
+
+export const AboveInitial: Story = {
+  args: {
+    budget: { ...mockBudget, initial_amount: '5000.00', balance: '6200.00' },
     onEdit: (id) => console.log('Edit budget:', id),
     onDelete: (id) => console.log('Delete budget:', id),
   },

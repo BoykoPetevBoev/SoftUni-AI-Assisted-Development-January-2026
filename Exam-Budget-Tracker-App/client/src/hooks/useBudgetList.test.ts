@@ -14,6 +14,7 @@ const mockBudgets: Budget[] = [
     description: 'Test budget',
     date: '2026-02-15',
     initial_amount: '5000.00',
+    balance: '4750.00',
     created_at: '2026-02-15T10:00:00Z',
     updated_at: '2026-02-15T10:00:00Z',
   },
