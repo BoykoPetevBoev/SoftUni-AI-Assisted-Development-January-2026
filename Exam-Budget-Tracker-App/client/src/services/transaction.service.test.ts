@@ -54,7 +54,7 @@ describe('transactionService', () => {
       id: 1,
       budget: 2,
       amount: '120.00',
-      category: 'Groceries',
+      category: 1,
       date: '2026-02-12',
       created_at: '2026-02-12T10:00:00Z',
       updated_at: '2026-02-12T10:00:00Z',
@@ -72,7 +72,7 @@ describe('transactionService', () => {
     const payload: CreateTransactionPayload = {
       budget: 1,
       amount: '250.00',
-      category: 'Freelance',
+      category: 3,
       date: '2026-02-10',
     };
 
@@ -80,7 +80,7 @@ describe('transactionService', () => {
       id: 1,
       budget: 1,
       amount: '250.00',
-      category: 'Freelance',
+      category: 3,
       date: '2026-02-10',
       created_at: '2026-02-10T10:00:00Z',
       updated_at: '2026-02-10T10:00:00Z',
@@ -100,14 +100,14 @@ describe('transactionService', () => {
   it('updateTransaction sends correct payload', async () => {
     const payload: UpdateTransactionPayload = {
       amount: '-50.00',
-      category: 'Dining',
+      category: 6,
     };
 
     const mockTransaction: Transaction = {
       id: 1,
       budget: 1,
       amount: '-50.00',
-      category: 'Dining',
+      category: 6,
       date: '2026-02-10',
       created_at: '2026-02-10T10:00:00Z',
       updated_at: '2026-02-10T10:00:00Z',

@@ -1,6 +1,7 @@
-@use '../../styles/variables' as *;
+@use '../../styles/utilities' as *;
+@use 'sass:color';
 
-.transaction-form-modal {
+.category-form-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -25,7 +26,7 @@
     background: $color-bg-card;
     border-radius: $border-radius-lg;
     box-shadow: $shadow-lg;
-    max-width: 520px;
+    max-width: 450px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -78,125 +79,93 @@
   &__btn {
     flex: 1;
     padding: $spacing-md $spacing-xl;
-    border: 1px solid transparent;
+    border: none;
     border-radius: $border-radius-md;
-    font-size: $font-size-base;
-    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
     cursor: pointer;
-    @include smooth-transition(background-color, color, transform);
+    @include smooth-transition(background-color, color);
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
     &--cancel {
-      background: transparent;
-      color: $color-text-secondary;
-      border: 1px solid $color-border-light;
+      background: $color-bg-secondary;
+      color: $color-text-primary;
 
       &:hover:not(:disabled) {
-        background: $color-bg-hover;
-        color: $color-text-primary;
-      }
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
+        background: $color-bg-tertiary;
       }
     }
 
     &--submit {
-      background: $gradient-primary;
+      background: $color-primary;
       color: #ffffff;
-      border-color: $color-primary;
 
       &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 102, 204, 0.25);
-      }
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
+        background: color.adjust($color-primary, $lightness: -10%);
       }
     }
   }
 }
 
 .form-group {
-  margin-bottom: $spacing-xl;
+  margin-bottom: $spacing-lg;
 
   &__label {
     display: block;
-    margin-bottom: $spacing-sm;
+    margin-bottom: $spacing-xs;
     font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
-    color: $color-text-secondary;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
   }
 
   &__required {
     color: $color-error;
-    margin-left: 2px;
   }
 
   &__input,
-  &__textarea,
-  &__select {
+  &__textarea {
     width: 100%;
-    padding: $spacing-md $spacing-lg;
+    padding: $spacing-md;
     border: 1px solid $color-border-light;
     border-radius: $border-radius-md;
-    font-size: $font-size-base;
-    font-family: inherit;
-    @include smooth-transition(border-color, box-shadow, background-color);
     background: $color-bg-primary;
     color: $color-text-primary;
+    font-size: $font-size-sm;
+    font-family: inherit;
+    @include smooth-transition(border-color, background-color);
+
+    &::placeholder {
+      color: $color-text-tertiary;
+    }
 
     &:focus {
       outline: none;
       border-color: $color-primary;
-      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
-      background: $color-bg-primary;
+      background: $color-bg-card;
     }
 
     &--error {
       border-color: $color-error;
 
       &:focus {
-        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        border-color: $color-error;
       }
-    }
-
-    &:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      background: $color-bg-secondary;
     }
   }
 
-  &__hint {
-    margin-top: $spacing-sm;
-    color: $color-text-tertiary;
-    font-size: $font-size-sm;
+  &__textarea {
+    resize: none;
+    font-family: inherit;
   }
 
   &__error {
-    margin-top: $spacing-sm;
+    margin-top: $spacing-xs;
     color: $color-error;
-    font-size: $font-size-sm;
-    margin-bottom: 0;
-  }
-}
-
-@media (max-width: 640px) {
-  .transaction-form-modal {
-    &__content {
-      max-width: 100%;
-      width: calc(100% - #{$spacing-2xl});
-    }
-
-    &__header {
-      padding: $spacing-lg $spacing-md $spacing-md;
-    }
-
-    &__form {
-      padding: $spacing-md;
-    }
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
   }
 }

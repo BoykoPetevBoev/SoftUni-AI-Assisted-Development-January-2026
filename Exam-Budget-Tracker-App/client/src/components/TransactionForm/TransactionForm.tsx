@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTransactionForm } from '../../hooks/useTransactionForm';
+import { useCategories } from '../../hooks/useCategories';
 import './TransactionForm.scss';
 
 interface TransactionFormProps {
@@ -17,10 +18,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 }) => {
   const { isEditMode, isLoading, register, handleSubmit, errors, onSubmit } =
     useTransactionForm({ budgetId, transactionId, onClose });
+  const { data: categoriesData, isLoading: isCategoriesLoading } = useCategories();
 
   if (!isOpen) {
     return null;
   }
+
+  const categories = categoriesData?.results || [];
 
   return (
     <div className="transaction-form-modal">
@@ -82,19 +86,44 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
           <div className="form-group">
             <label htmlFor="category" className="form-group__label">
-              Category<span className="form-group__required">*</span>
+              Category
             </label>
-            <input
+            <select
               id="category"
-              type="text"
-              placeholder="e.g., Salary, Groceries"
-              className={`form-group__input ${
+              disabled={isCategoriesLoading}
+              className={`form-group__input form-group__select ${
                 errors.category ? 'form-group__input--error' : ''
               }`}
               {...register('category')}
-            />
+            >
+              <option value="">-- Select a category (optional) --</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id.toString()}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            {isCategoriesLoading && (
+              <p className="form-group__hint">Loading categories...</p>
+            )}
             {errors.category && (
               <p className="form-group__error">{errors.category.message}</p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description" className="form-group__label">
+              Description
+            </label>
+            <textarea
+              id="description"
+              placeholder="Add notes about this transaction (optional)"
+              className="form-group__textarea"
+              rows={3}
+              {...register('description')}
+            />
+            {errors.description && (
+              <p className="form-group__error">{errors.description.message}</p>
             )}
           </div>
 

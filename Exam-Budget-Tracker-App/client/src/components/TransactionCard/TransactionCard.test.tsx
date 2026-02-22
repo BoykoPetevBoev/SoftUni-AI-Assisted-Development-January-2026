@@ -4,11 +4,22 @@ import userEvent from '@testing-library/user-event';
 import { TransactionCard } from './TransactionCard';
 import type { Transaction } from '../../types/transaction';
 
+vi.mock('../../hooks/useCategoryName', () => ({
+  useCategoryName: (categoryId: number | null | undefined) => {
+    const categoryMap: Record<number, string> = {
+      1: 'Groceries',
+      2: 'Transport',
+      3: 'Entertainment',
+    };
+    return categoryId ? categoryMap[categoryId] || `Category ${categoryId}` : 'Uncategorized';
+  },
+}));
+
 const mockTransaction: Transaction = {
   id: 1,
   budget: 1,
   amount: '-125.50',
-  category: 'Groceries',
+  category: 1,
   date: '2026-02-12',
   created_at: '2026-02-12T10:00:00Z',
   updated_at: '2026-02-12T10:00:00Z',
@@ -52,7 +63,7 @@ describe('TransactionCard', () => {
     );
 
     const selectButton = screen.getByRole('button', {
-      name: /view details for groceries transaction/i,
+      name: /view details for Groceries transaction/i,
     });
     await user.click(selectButton);
 
@@ -71,7 +82,7 @@ describe('TransactionCard', () => {
       />
     );
 
-    await user.click(screen.getByRole('button', { name: /edit groceries transaction/i }));
+    await user.click(screen.getByRole('button', { name: /edit Groceries transaction/i }));
     expect(onEdit).toHaveBeenCalledWith(mockTransaction.id);
   });
 
@@ -87,7 +98,7 @@ describe('TransactionCard', () => {
       />
     );
 
-    await user.click(screen.getByRole('button', { name: /delete groceries transaction/i }));
+    await user.click(screen.getByRole('button', { name: /delete Groceries transaction/i }));
     expect(onDelete).toHaveBeenCalledWith(mockTransaction.id);
   });
 

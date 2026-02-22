@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTransactionDisplay } from '../../hooks/useTransactionDisplay';
+import { useCategoryName } from '../../hooks/useCategoryName';
 import type { Transaction } from '../../types/transaction';
 import './TransactionCard.scss';
 
@@ -20,6 +21,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
 }) => {
   const { formattedDate, formattedAmount, amountClassName, amountLabel } =
     useTransactionDisplay(transaction);
+  const categoryName = useCategoryName(transaction.category);
 
   return (
     <div
@@ -32,10 +34,10 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         className="transaction-card__select"
         onClick={() => onSelect(transaction.id)}
         aria-pressed={isSelected}
-        aria-label={`View details for ${transaction.category} transaction`}
+        aria-label={`View details for ${categoryName} transaction`}
       >
         <div className="transaction-card__info">
-          <h4 className="transaction-card__category">{transaction.category}</h4>
+          <h4 className="transaction-card__category">{categoryName}</h4>
           <p className="transaction-card__date">{formattedDate}</p>
         </div>
         <div className={`transaction-card__amount transaction-card__amount--${amountClassName}`}>
@@ -48,7 +50,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
           type="button"
           className="transaction-card__btn transaction-card__btn--edit"
           onClick={() => onEdit(transaction.id)}
-          aria-label={`Edit ${transaction.category} transaction`}
+          aria-label={`Edit ${categoryName} transaction`}
         >
           Edit
         </button>
@@ -56,7 +58,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
           type="button"
           className="transaction-card__btn transaction-card__btn--delete"
           onClick={() => onDelete(transaction.id)}
-          aria-label={`Delete ${transaction.category} transaction`}
+          aria-label={`Delete ${categoryName} transaction`}
         >
           Delete
         </button>

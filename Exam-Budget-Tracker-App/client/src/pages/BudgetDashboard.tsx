@@ -2,7 +2,10 @@ import React from 'react';
 import { Header } from '../components/Header';
 import { BudgetListContainer } from '../components/BudgetListContainer';
 import { BudgetForm } from '../components/BudgetForm';
+import { CategoryManagementPanel } from '../components/CategoryManagementPanel';
 import { useBudgetDashboard } from '../hooks/useBudgetDashboard';
+import { useBudgets } from '../hooks/useBudgets';
+import { useTransactions } from '../hooks/useTransactions';
 import { useAuth } from '../hooks/useAuth';
 import './BudgetDashboard.scss';
 
@@ -16,9 +19,29 @@ export const BudgetDashboard: React.FC = () => {
     closeForm,
   } = useBudgetDashboard();
 
-  const balance = 5250.75;
-  const income = 8500.0;
-  const expenses = 3249.25;
+  const { data: budgetsData } = useBudgets();
+  const { data: transactionsData } = useTransactions();
+
+  const budgets = budgetsData?.results || [];
+  const transactions = transactionsData?.results || [];
+
+  // Calculate total balance from all budgets
+  const totalBalance = budgets.reduce(
+    (sum, budget) => sum + parseFloat(budget.balance || '0'),
+    0
+  );
+
+  // Calculate positive transactions (income)
+  const totalIncome = transactions
+    .filter((transaction) => parseFloat(transaction.amount) > 0)
+    .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+
+  // Calculate negative transactions (expenses) - as absolute value
+  const totalExpenses = Math.abs(
+    transactions
+      .filter((transaction) => parseFloat(transaction.amount) < 0)
+      .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0)
+  );
 
   return (
     <div className="budget-dashboard">
@@ -36,24 +59,26 @@ export const BudgetDashboard: React.FC = () => {
         <div className="stats-grid">
           <div className="stat-card stat-card--primary">
             <div className="stat-label">Total Balance</div>
-            <div className="stat-value">${balance.toFixed(2)}</div>
+            <div className="stat-value">${totalBalance.toFixed(2)}</div>
             <div className="stat-change positive">↑ +$500 this month</div>
           </div>
 
           <div className="stat-card stat-card--success">
             <div className="stat-label">Total Income</div>
-            <div className="stat-value">${income.toFixed(2)}</div>
+            <div className="stat-value">${totalIncome.toFixed(2)}</div>
             <div className="stat-change positive">↑ +$1,200 vs last month</div>
           </div>
 
           <div className="stat-card stat-card--error">
             <div className="stat-label">Total Expenses</div>
-            <div className="stat-value">${expenses.toFixed(2)}</div>
+            <div className="stat-value">${totalExpenses.toFixed(2)}</div>
             <div className="stat-change negative">↓ -$400 vs last month</div>
           </div>
         </div>
 
         <BudgetListContainer onCreateClick={openCreateForm} onEditClick={openEditForm} />
+
+        <CategoryManagementPanel />
       </div>
 
       <BudgetForm
