@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from budgets.models import Budget
+from categories.models import Category
 from .models import Transaction
 
 User = get_user_model()
@@ -79,23 +80,36 @@ def budget_for_user2(test_user_2):
 
 
 @pytest.fixture
-def valid_transaction_data(budget_for_user1):
+def category_for_user1(test_user):
+    """Create a category owned by test_user"""
+    return Category.objects.create(user=test_user, name='Salary')
+
+
+@pytest.fixture
+def category_for_user2(test_user_2):
+    """Create a category owned by test_user_2"""
+    return Category.objects.create(user=test_user_2, name='Other')
+
+
+@pytest.fixture
+def valid_transaction_data(budget_for_user1, category_for_user1):
     """Provide valid transaction data for creation tests"""
     return {
         'budget': budget_for_user1.id,
         'amount': '250.00',
-        'category': 'Salary',
+        'category': category_for_user1.id,
         'date': '2026-02-15',
+        'description': 'Monthly paycheck'
     }
 
 
 @pytest.fixture
-def transaction_for_user1(budget_for_user1):
+def transaction_for_user1(budget_for_user1, category_for_user1):
     """Create a transaction owned by test_user via budget"""
     return Transaction.objects.create(
         budget=budget_for_user1,
         amount='120.00',
-        category='Groceries',
+        category=category_for_user1,
         date='2026-02-10'
     )
 
@@ -143,11 +157,12 @@ class TestTransactionCreation:
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['amount'] == '250.00'
-        assert response.data['category'] == 'Salary'
+        assert response.data['category'] == valid_transaction_data['category']
         assert response.data['budget'] == valid_transaction_data['budget']
         assert response.data['date'] == '2026-02-15'
+        assert response.data['description'] == 'Monthly paycheck'
 
-        assert Transaction.objects.filter(category='Salary').exists()
+        assert Transaction.objects.filter(category_id=valid_transaction_data['category']).exists()
 
     def test_create_transaction_sets_timestamps(self, authenticated_client, valid_transaction_data):
         response = authenticated_client.post('/api/transactions/', valid_transaction_data)
@@ -157,12 +172,12 @@ class TestTransactionCreation:
         assert 'updated_at' in response.data
 
     def test_create_transaction_with_negative_amount_allowed(
-        self, authenticated_client, budget_for_user1
+        self, authenticated_client, budget_for_user1, category_for_user1
     ):
         data = {
             'budget': budget_for_user1.id,
             'amount': '-50.00',
-            'category': 'Lunch',
+            'category': category_for_user1.id,
             'date': '2026-02-12',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -171,18 +186,31 @@ class TestTransactionCreation:
         assert response.data['amount'] == '-50.00'
 
     def test_create_transaction_with_other_user_budget_returns_400(
-        self, authenticated_client, budget_for_user2
+        self, authenticated_client, budget_for_user2, category_for_user1
     ):
         data = {
             'budget': budget_for_user2.id,
             'amount': '100.00',
-            'category': 'Invalid',
+            'category': category_for_user1.id,
             'date': '2026-02-15',
         }
         response = authenticated_client.post('/api/transactions/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'budget' in response.data
+
+    def test_create_transaction_without_category_returns_201(
+        self, authenticated_client, budget_for_user1
+    ):
+        data = {
+            'budget': budget_for_user1.id,
+            'amount': '80.00',
+            'date': '2026-02-12',
+        }
+        response = authenticated_client.post('/api/transactions/', data)
+
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data['category'] is None
 
 
 # ==================== VALIDATION TESTS ====================
@@ -191,10 +219,13 @@ class TestTransactionCreation:
 class TestTransactionValidation:
     """Test input validation for transactions"""
 
-    def test_create_transaction_missing_category_returns_400(self, authenticated_client, budget_for_user1):
+    def test_create_transaction_with_other_user_category_returns_400(
+        self, authenticated_client, budget_for_user1, category_for_user2
+    ):
         data = {
             'budget': budget_for_user1.id,
             'amount': '120.00',
+            'category': category_for_user2.id,
             'date': '2026-02-10',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -202,11 +233,13 @@ class TestTransactionValidation:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'category' in response.data
 
-    def test_create_transaction_blank_category_returns_400(self, authenticated_client, budget_for_user1):
+    def test_create_transaction_invalid_category_returns_400(
+        self, authenticated_client, budget_for_user1
+    ):
         data = {
             'budget': budget_for_user1.id,
             'amount': '120.00',
-            'category': '   ',
+            'category': 99999,
             'date': '2026-02-10',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -217,7 +250,6 @@ class TestTransactionValidation:
     def test_create_transaction_missing_amount_returns_400(self, authenticated_client, budget_for_user1):
         data = {
             'budget': budget_for_user1.id,
-            'category': 'Food',
             'date': '2026-02-10',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -229,7 +261,6 @@ class TestTransactionValidation:
         data = {
             'budget': budget_for_user1.id,
             'amount': 'invalid',
-            'category': 'Food',
             'date': '2026-02-10',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -241,7 +272,6 @@ class TestTransactionValidation:
         data = {
             'budget': budget_for_user1.id,
             'amount': '120.00',
-            'category': 'Food',
         }
         response = authenticated_client.post('/api/transactions/', data)
 
@@ -252,7 +282,6 @@ class TestTransactionValidation:
         data = {
             'budget': budget_for_user1.id,
             'amount': '120.00',
-            'category': 'Food',
             'date': '10-02-2026',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -263,7 +292,6 @@ class TestTransactionValidation:
     def test_create_transaction_missing_budget_returns_400(self, authenticated_client):
         data = {
             'amount': '120.00',
-            'category': 'Food',
             'date': '2026-02-10',
         }
         response = authenticated_client.post('/api/transactions/', data)
@@ -275,13 +303,26 @@ class TestTransactionValidation:
         data = {
             'budget': 99999,
             'amount': '120.00',
-            'category': 'Food',
             'date': '2026-02-10',
         }
         response = authenticated_client.post('/api/transactions/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'budget' in response.data
+
+    def test_create_transaction_description_too_long_returns_400(
+        self, authenticated_client, budget_for_user1
+    ):
+        data = {
+            'budget': budget_for_user1.id,
+            'amount': '120.00',
+            'date': '2026-02-10',
+            'description': 'A' * 256,
+        }
+        response = authenticated_client.post('/api/transactions/', data)
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'description' in response.data
 
 
 # ==================== READ TESTS ====================
@@ -291,18 +332,18 @@ class TestTransactionRetrieval:
     """Test retrieving transactions"""
 
     def test_list_transactions_returns_user_transactions(
-        self, authenticated_client, budget_for_user1, budget_for_user2
+        self, authenticated_client, budget_for_user1, budget_for_user2, category_for_user1
     ):
         Transaction.objects.create(
             budget=budget_for_user1,
             amount='50.00',
-            category='Food',
+            category=category_for_user1,
             date='2026-02-01'
         )
         Transaction.objects.create(
             budget=budget_for_user2,
             amount='75.00',
-            category='Other',
+            category=None,
             date='2026-02-01'
         )
 
@@ -312,12 +353,12 @@ class TestTransactionRetrieval:
         assert response.data['count'] == 1
         assert len(response.data['results']) == 1
 
-    def test_list_transactions_pagination(self, authenticated_client, budget_for_user1):
+    def test_list_transactions_pagination(self, authenticated_client, budget_for_user1, category_for_user1):
         for index in range(1, 4):
             Transaction.objects.create(
                 budget=budget_for_user1,
                 amount=f'{index}.00',
-                category='Food',
+                category=category_for_user1,
                 date=f'2026-02-0{index}'
             )
 
@@ -336,12 +377,12 @@ class TestTransactionRetrieval:
         assert response.data['id'] == transaction_for_user1.id
 
     def test_retrieve_other_user_transaction_returns_404(
-        self, authenticated_client, authenticated_client_2, budget_for_user1
+        self, authenticated_client, authenticated_client_2, budget_for_user1, category_for_user1
     ):
         transaction = Transaction.objects.create(
             budget=budget_for_user1,
             amount='50.00',
-            category='Food',
+            category=category_for_user1,
             date='2026-02-01'
         )
 
@@ -363,15 +404,23 @@ class TestTransactionRetrieval:
 class TestTransactionUpdate:
     """Test updating transactions"""
 
-    def test_update_transaction_returns_200(self, authenticated_client, transaction_for_user1):
+    def test_update_transaction_returns_200(
+        self, authenticated_client, transaction_for_user1, test_user
+    ):
+        new_category = Category.objects.create(user=test_user, name='Updated')
         response = authenticated_client.patch(
             f'/api/transactions/{transaction_for_user1.id}/',
-            {'category': 'Updated', 'amount': '200.00'}
+            {
+                'category': new_category.id,
+                'amount': '200.00',
+                'description': 'Updated description'
+            }
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['category'] == 'Updated'
+        assert response.data['category'] == new_category.id
         assert response.data['amount'] == '200.00'
+        assert response.data['description'] == 'Updated description'
 
     def test_update_transaction_budget_to_other_user_returns_400(
         self, authenticated_client, transaction_for_user1, budget_for_user2
@@ -383,6 +432,17 @@ class TestTransactionUpdate:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'budget' in response.data
+
+    def test_update_transaction_category_to_other_user_returns_400(
+        self, authenticated_client, transaction_for_user1, category_for_user2
+    ):
+        response = authenticated_client.patch(
+            f'/api/transactions/{transaction_for_user1.id}/',
+            {'category': category_for_user2.id}
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert 'category' in response.data
 
 
 # ==================== DELETE TESTS ====================
@@ -404,17 +464,19 @@ class TestTransactionDeletion:
 class TestBudgetBalance:
     """Test budget balance calculations"""
 
-    def test_budget_balance_updates_with_transactions(self, authenticated_client, budget_for_user1):
+    def test_budget_balance_updates_with_transactions(
+        self, authenticated_client, budget_for_user1, category_for_user1
+    ):
         Transaction.objects.create(
             budget=budget_for_user1,
             amount='200.00',
-            category='Income',
+            category=category_for_user1,
             date='2026-02-10'
         )
         Transaction.objects.create(
             budget=budget_for_user1,
             amount='-50.00',
-            category='Expense',
+            category=None,
             date='2026-02-11'
         )
 
@@ -423,11 +485,13 @@ class TestBudgetBalance:
         assert response.status_code == status.HTTP_200_OK
         assert response.data['balance'] == '1150.00'
 
-    def test_budget_balance_updates_on_transaction_change(self, authenticated_client, budget_for_user1):
+    def test_budget_balance_updates_on_transaction_change(
+        self, authenticated_client, budget_for_user1, category_for_user1
+    ):
         transaction = Transaction.objects.create(
             budget=budget_for_user1,
             amount='100.00',
-            category='Income',
+            category=category_for_user1,
             date='2026-02-10'
         )
 
@@ -439,11 +503,13 @@ class TestBudgetBalance:
         assert response.status_code == status.HTTP_200_OK
         assert response.data['balance'] == '1300.00'
 
-    def test_budget_balance_updates_on_transaction_delete(self, authenticated_client, budget_for_user1):
+    def test_budget_balance_updates_on_transaction_delete(
+        self, authenticated_client, budget_for_user1, category_for_user1
+    ):
         transaction = Transaction.objects.create(
             budget=budget_for_user1,
             amount='200.00',
-            category='Income',
+            category=category_for_user1,
             date='2026-02-10'
         )
 
