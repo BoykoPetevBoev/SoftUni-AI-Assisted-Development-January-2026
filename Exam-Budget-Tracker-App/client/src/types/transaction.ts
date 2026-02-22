@@ -4,7 +4,8 @@ export interface Transaction {
   id: number;
   budget: number;
   amount: string;
-  category: string;
+  category: number | null;
+  description?: string;
   date: string;
   created_at: string;
   updated_at: string;
@@ -13,14 +14,16 @@ export interface Transaction {
 export interface CreateTransactionPayload {
   budget: number;
   amount: string | number;
-  category: string;
+  category?: number | null;
+  description?: string;
   date: string;
 }
 
 export interface UpdateTransactionPayload {
   budget?: number;
   amount?: string | number;
-  category?: string;
+  category?: number | null;
+  description?: string;
   date?: string;
 }
 
@@ -44,10 +47,20 @@ export const transactionFormSchema = z.object({
     )
     .transform((value) => value.toString()),
   category: z
+    .union([
+      z.string().transform((val) => (val === '' ? null : Number(val))),
+      z.number().nullable(),
+      z.null(),
+    ])
+    .refine((val) => val === null || Number.isInteger(val), 'Invalid category')
+    .optional()
+    .default(null)
+    .nullable(),
+  description: z
     .string()
-    .trim()
-    .min(1, 'Category is required')
-    .max(100, 'Category must be at most 100 characters'),
+    .max(255, 'Description must not exceed 255 characters')
+    .optional()
+    .default(''),
   date: z
     .string()
     .min(1, 'Date is required')

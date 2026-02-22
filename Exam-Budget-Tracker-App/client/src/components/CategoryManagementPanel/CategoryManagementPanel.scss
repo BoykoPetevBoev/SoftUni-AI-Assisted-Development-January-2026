@@ -1,0 +1,19 @@
+@use '../../styles/utilities' as *;
+
+.category-management-panel {
+  width: 100%;
+  background: $color-bg-card;
+  border: 1px solid $color-border-light;
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  margin-top: $spacing-3xl;
+  @include smooth-transition(background-color, border-color);
+
+  @media (max-width: 768px) {
+    margin-top: $spacing-2xl;
+  }
+
+  @media (max-width: 640px) {
+    padding: $spacing-lg;
+    margin-top: $spacing-xl;
+  }}

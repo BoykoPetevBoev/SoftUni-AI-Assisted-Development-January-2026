@@ -17,11 +17,23 @@ vi.mock('../hooks/useBudgetDetails', () => ({
   useBudgetDetails: vi.fn(),
 }));
 
+vi.mock('../hooks/useCategoryName', () => ({
+  useCategoryName: (categoryId: number | null | undefined) => {
+    const categoryMap: Record<number, string> = {
+      1: 'Groceries',
+      2: 'Transport',
+      3: 'Entertainment',
+      5: 'Coffee',
+    };
+    return categoryId ? categoryMap[categoryId] || `Category ${categoryId}` : 'Uncategorized';
+  },
+}));
+
 const mockTransaction: Transaction = {
   id: 5,
   budget: 1,
   amount: '-42.00',
-  category: 'Coffee',
+  category: 5,
   date: '2026-02-12',
   created_at: '2026-02-12T10:00:00Z',
   updated_at: '2026-02-12T10:00:00Z',
@@ -67,7 +79,7 @@ describe('BudgetDetails', () => {
     expect(screen.getByText('Monthly Budget')).toBeInTheDocument();
     expect(screen.getByText('Main budget')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /view details for coffee transaction/i })
+      screen.getByRole('button', { name: /view details for Coffee transaction/i })
     ).toBeInTheDocument();
 
     const detail = screen.getByRole('heading', { name: 'Transaction Details' }).parentElement;

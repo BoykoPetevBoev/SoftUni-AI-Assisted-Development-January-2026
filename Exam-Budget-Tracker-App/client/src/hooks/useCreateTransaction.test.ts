@@ -18,7 +18,7 @@ const mockTransaction: Transaction = {
   id: 1,
   budget: 2,
   amount: '250.00',
-  category: 'Freelance',
+  category: 3,
   date: '2026-02-10',
   created_at: '2026-02-10T09:00:00Z',
   updated_at: '2026-02-10T09:00:00Z',
@@ -57,7 +57,7 @@ describe('useCreateTransaction', () => {
     const payload: CreateTransactionPayload = {
       budget: 2,
       amount: '250.00',
-      category: 'Freelance',
+      category: 3,
       date: '2026-02-10',
     };
 
@@ -95,7 +95,7 @@ describe('useCreateTransaction', () => {
         result.current.mutateAsync({
           budget: 2,
           amount: '250.00',
-          category: 'Freelance',
+          category: 3,
           date: '2026-02-10',
         })
       ).rejects.toThrow('Boom');

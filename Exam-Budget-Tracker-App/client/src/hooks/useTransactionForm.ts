@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   transactionFormSchema,
   type TransactionFormData,
+  type UpdateTransactionPayload,
+  type CreateTransactionPayload,
 } from '../types/transaction';
 import { useTransaction } from './useTransaction';
 import { useCreateTransaction } from './useCreateTransaction';
@@ -73,16 +75,20 @@ export const useTransactionForm = ({
       return;
     }
 
+    const categoryValue = typeof data.category === 'string' ? (data.category === '' ? null : Number(data.category)) : data.category ?? null;
+
     if (isEditMode) {
       updateMutation.mutate({
         ...data,
         budget: budgetId,
-      });
+        category: categoryValue,
+      } as UpdateTransactionPayload);
     } else {
       createMutation.mutate({
         ...data,
         budget: budgetId,
-      });
+        category: categoryValue,
+      } as CreateTransactionPayload);
     }
   };
 

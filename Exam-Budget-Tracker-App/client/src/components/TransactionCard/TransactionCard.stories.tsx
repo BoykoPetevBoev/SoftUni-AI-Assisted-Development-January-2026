@@ -7,7 +7,7 @@ const mockTransaction: Transaction = {
   id: 1,
   budget: 1,
   amount: '-42.50',
-  category: 'Groceries',
+  category: 1,
   date: '2026-02-10',
   created_at: '2026-02-10T09:00:00Z',
   updated_at: '2026-02-10T09:00:00Z',
@@ -69,6 +69,6 @@ export const Selected: Story = {
 export const Income: Story = {
   args: {
     ...Default.args,
-    transaction: { ...mockTransaction, amount: '2400.00', category: 'Salary' },
+    transaction: { ...mockTransaction, amount: '2400.00', category: 2 },
   },
 };

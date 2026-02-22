@@ -4,12 +4,23 @@ import userEvent from '@testing-library/user-event';
 import { TransactionList } from './TransactionList';
 import type { Transaction } from '../../types/transaction';
 
+vi.mock('../../hooks/useCategoryName', () => ({
+  useCategoryName: (categoryId: number | null | undefined) => {
+    const categoryMap: Record<number, string> = {
+      1: 'Groceries',
+      2: 'Transport',
+      3: 'Entertainment',
+    };
+    return categoryId ? categoryMap[categoryId] || `Category ${categoryId}` : 'Uncategorized';
+  },
+}));
+
 const mockTransactions: Transaction[] = [
   {
     id: 1,
     budget: 1,
     amount: '1200.00',
-    category: 'Salary',
+    category: 2,
     date: '2026-02-10',
     created_at: '2026-02-10T09:00:00Z',
     updated_at: '2026-02-10T09:00:00Z',
@@ -18,7 +29,7 @@ const mockTransactions: Transaction[] = [
     id: 2,
     budget: 1,
     amount: '-75.25',
-    category: 'Transport',
+    category: 3,
     date: '2026-02-11',
     created_at: '2026-02-11T09:00:00Z',
     updated_at: '2026-02-11T09:00:00Z',
@@ -74,8 +85,8 @@ describe('TransactionList', () => {
 
   it('displays transactions when loaded', () => {
     renderList({ transactions: mockTransactions });
-    expect(screen.getByText('Salary')).toBeInTheDocument();
     expect(screen.getByText('Transport')).toBeInTheDocument();
+    expect(screen.getByText('Entertainment')).toBeInTheDocument();
   });
 
   it('calls onSelect when transaction is clicked', async () => {
@@ -84,7 +95,7 @@ describe('TransactionList', () => {
 
     await user.click(
       screen.getByRole('button', {
-        name: /view details for salary transaction/i,
+        name: /view details for Transport transaction/i,
       })
     );
 

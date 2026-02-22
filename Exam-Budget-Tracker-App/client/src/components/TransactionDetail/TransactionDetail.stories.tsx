@@ -6,7 +6,7 @@ const mockTransaction: Transaction = {
   id: 8,
   budget: 1,
   amount: '-120.00',
-  category: 'Groceries',
+  category: 1,
   date: '2026-02-05',
   created_at: '2026-02-05T09:00:00Z',
   updated_at: '2026-02-05T09:00:00Z',

@@ -37,7 +37,7 @@ describe('useTransactions', () => {
           id: 1,
           budget: 1,
           amount: '120.00',
-          category: 'Groceries',
+          category: 1,
           date: '2026-02-10',
           created_at: '2026-02-10T09:00:00Z',
           updated_at: '2026-02-10T09:00:00Z',

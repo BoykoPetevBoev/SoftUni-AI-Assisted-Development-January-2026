@@ -71,7 +71,6 @@ describe('TransactionForm', () => {
     await waitFor(() => {
       expect(screen.getByText('Amount is required')).toBeInTheDocument();
       expect(screen.getByText('Date is required')).toBeInTheDocument();
-      expect(screen.getByText('Category is required')).toBeInTheDocument();
     });
   });
 });
