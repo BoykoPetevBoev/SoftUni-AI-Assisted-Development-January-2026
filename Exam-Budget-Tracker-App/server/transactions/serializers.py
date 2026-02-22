@@ -7,7 +7,7 @@ from .models import Transaction
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ['id', 'budget', 'amount', 'category', 'date', 'created_at', 'updated_at']
+        fields = ['id', 'budget', 'amount', 'category', 'description', 'date', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
         extra_kwargs = {
             'budget': {
@@ -24,10 +24,19 @@ class TransactionSerializer(serializers.ModelSerializer):
                 }
             },
             'category': {
+                'required': False,
+                'allow_null': True,
                 'error_messages': {
-                    'required': 'Category is required.',
-                    'blank': 'Category cannot be blank.',
-                    'max_length': 'Category must be at most 100 characters.',
+                    'does_not_exist': 'Category does not exist.',
+                    'incorrect_type': 'Category must be a valid ID.',
+                }
+            },
+            'description': {
+                'required': False,
+                'allow_blank': True,
+                'allow_null': True,
+                'error_messages': {
+                    'max_length': 'Description must be at most 255 characters.',
                 }
             },
             'date': {
@@ -39,8 +48,19 @@ class TransactionSerializer(serializers.ModelSerializer):
         }
 
     def validate_category(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError('Category cannot be empty.')
+        if value is None:
+            return value
+
+        request = self.context.get('request')
+        if not request or not request.user or not request.user.is_authenticated:
+            raise serializers.ValidationError('Authenticated user is required.')
+        if value.user != request.user:
+            raise serializers.ValidationError('Category does not belong to the authenticated user.')
+        return value
+
+    def validate_description(self, value):
+        if value is None:
+            return value
         return value.strip()
 
     def validate_amount(self, value):

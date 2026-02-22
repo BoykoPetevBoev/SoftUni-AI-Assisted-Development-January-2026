@@ -89,6 +89,57 @@ For every module, include:
 
 Keep the description for each module up to half a page.
 
+### User Budget Module
+Approach & reasoning
+The User Budget Module was built as the core financial container for every user, so I focused on clean multi-budget support, strict user scoping, and a clear contract between backend and frontend. I aligned the backend model and validation rules with the frontend Zod schemas to keep data integrity consistent across the stack.
+
+Step-by-step workflow
+Plan created to introduce a dedicated `budgets` app (model, serializer, viewset, URLs) with CRUD endpoints and user ownership enforcement. Backend work followed the plan in [docs/05-Create-User-Budget-Model-View-Serializer-Endpoints.md](docs/05-Create-User-Budget-Model-View-Serializer-Endpoints.md). Frontend work followed the plan in [docs/06-Implement-User-Budget-Frontend-Service-Query-Mutation-Hooks-Components.md](docs/06-Implement-User-Budget-Frontend-Service-Query-Mutation-Hooks-Components.md): service layer, React Query hooks, modal-based form, budget list/dashboard, and route wiring. After implementation, I ran QA checks and adjusted error handling and cache invalidation where needed.
+
+Testing strategy
+Backend: Pytest coverage for CRUD, validation, and user isolation (multi-budget per user). Frontend: Vitest component and hook tests for list/detail/forms, plus Storybook stories for visual validation. Manual checks included multi-budget creation, edit, delete, and access control verification.
+
+AI tool choice
+Primary tool: GitHub Copilot in VS Code for scaffolding and refactoring; plan agent for architecture and endpoint flow. Copilot was chosen for tight IDE integration and fast iteration on boilerplate-heavy work.
+
+Key prompts or interactions
+- Backend plan and results: [docs/05-Create-User-Budget-Model-View-Serializer-Endpoints.md](docs/05-Create-User-Budget-Model-View-Serializer-Endpoints.md)
+- Frontend plan and results: [docs/06-Implement-User-Budget-Frontend-Service-Query-Mutation-Hooks-Components.md](docs/06-Implement-User-Budget-Frontend-Service-Query-Mutation-Hooks-Components.md)
+
+### Transactions Module
+Approach & reasoning
+The Transactions Module needed accurate budget impact, so I designed the backend to compute budget balance dynamically from related transactions. I also deferred full category management to keep scope small, using a required category string on each transaction while ensuring validation and ownership checks remained strict.
+
+Step-by-step workflow
+Backend plan in [docs/07-Implement-Transactions-Module-Backend-Model-API-Serializers.md](docs/07-Implement-Transactions-Module-Backend-Model-API-Serializers.md): new `transactions` app, serializer validation, viewset with user scoping, and budget balance computation in the budget serializer. Frontend plan in [docs/08-Implement-Transactions-Module-Frontend-Components-Forms-Integration.md](docs/08-Implement-Transactions-Module-Frontend-Components-Forms-Integration.md): types, service layer, React Query hooks, modal form, list/detail UI, and budget details page with real-time balance updates.
+
+Testing strategy
+Backend: Pytest CRUD tests, validation failures, ownership isolation, and balance correctness. Frontend: Vitest tests for form, list/detail components, hooks, and BudgetDetails integration; Storybook stories for the UI. Manual testing confirmed add/edit/delete flows and live balance updates.
+
+AI tool choice
+Primary tool: GitHub Copilot for rapid scaffolding and consistent patterns across service/hooks/components; plan agent to organize backend vs frontend responsibilities and prevent scope drift.
+
+Key prompts or interactions
+- Backend plan and results: [docs/07-Implement-Transactions-Module-Backend-Model-API-Serializers.md](docs/07-Implement-Transactions-Module-Backend-Model-API-Serializers.md)
+- Frontend plan and results: [docs/08-Implement-Transactions-Module-Frontend-Components-Forms-Integration.md](docs/08-Implement-Transactions-Module-Frontend-Components-Forms-Integration.md)
+
+### Category Module
+Approach & reasoning
+Category management was intentionally deferred to keep early iterations focused on budgets and transactions. I used a temporary category string on transactions to unblock end-to-end flows while planning a dedicated category model with user ownership, CRUD APIs, and UI management screens.
+
+Step-by-step workflow
+Backlog item created for a future iteration to implement a `categories` app on the backend, a category service and hooks on the frontend, and UI for create/edit/delete. The module is scoped to include user-owned categories, unique naming per user, and safe deletion handling for transactions that reference categories.
+
+Testing strategy
+Planned tests include backend CRUD/permission coverage, validation for unique names, and frontend form/component tests for category management flows. Manual testing will focus on category creation, assignment to transactions, and deletion constraints.
+
+AI tool choice
+Planned tool: GitHub Copilot for scaffolding the model, serializer, viewset, and React components once implementation starts, due to its strong IDE integration and consistent code generation.
+
+Key prompts or interactions
+- Draft prompt (planned): "Design Category CRUD (model, serializer, viewset) with user ownership and unique names per user."
+- Draft prompt (planned): "Build Category management UI with React Hook Form + Zod and integrate with transactions form." 
+
 ## Challenges & Tool Comparison
 A section where you explain:
 - The biggest challenges you encountered

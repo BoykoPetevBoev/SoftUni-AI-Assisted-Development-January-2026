@@ -45,6 +45,11 @@ Authorization: Bearer <access_token>
 | GET | /budgets/{id}/ | Retrieve a budget | Yes |
 | PATCH | /budgets/{id}/ | Update a budget | Yes |
 | DELETE | /budgets/{id}/ | Delete a budget | Yes |
+| GET | /categories/ | List categories (paginated) | Yes |
+| POST | /categories/ | Create a category | Yes |
+| GET | /categories/{id}/ | Retrieve a category | Yes |
+| PATCH | /categories/{id}/ | Update a category | Yes |
+| DELETE | /categories/{id}/ | Delete a category | Yes |
 | GET | /transactions/ | List transactions (paginated) | Yes |
 | POST | /transactions/ | Create a transaction | Yes |
 | GET | /transactions/{id}/ | Retrieve a transaction | Yes |
@@ -277,6 +282,107 @@ Authorization: Bearer <access_token>
 ```
 ```
 
+## Categories
+
+### List Categories
+
+**Method:** GET
+**Path:** `/categories/`
+**Description:** List categories for the authenticated user (paginated).
+
+**Response (200 OK)**
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": 1,
+      "name": "Groceries",
+      "created_at": "2026-02-15T09:30:00Z",
+      "updated_at": "2026-02-15T09:30:00Z"
+    }
+  ]
+}
+```
+
+### Create Category
+
+**Method:** POST
+**Path:** `/categories/`
+**Description:** Create a category for the authenticated user.
+
+**Request Body**
+```json
+{
+  "name": "Groceries"
+}
+```
+
+**Response (201 Created)**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "name": "Groceries",
+  "created_at": "2026-02-15T09:30:00Z",
+  "updated_at": "2026-02-15T09:30:00Z"
+}
+```
+
+### Retrieve Category
+
+**Method:** GET
+**Path:** `/categories/{id}/`
+**Description:** Retrieve a single category.
+
+**Response (200 OK)**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "name": "Groceries",
+  "created_at": "2026-02-15T09:30:00Z",
+  "updated_at": "2026-02-15T09:30:00Z"
+}
+```
+
+### Update Category
+
+**Method:** PATCH
+**Path:** `/categories/{id}/`
+**Description:** Update fields on a category.
+
+**Request Body**
+```json
+{
+  "name": "Food"
+}
+```
+
+**Response (200 OK)**
+```json
+{
+  "id": 1,
+  "user": 1,
+  "name": "Food",
+  "created_at": "2026-02-15T09:30:00Z",
+  "updated_at": "2026-02-16T09:30:00Z"
+}
+```
+
+### Delete Category
+
+**Method:** DELETE
+**Path:** `/categories/{id}/`
+**Description:** Delete a category.
+
+**Response (204 No Content)**
+```
+```
+
 ## Transactions
 
 ### List Transactions
@@ -299,7 +405,8 @@ Authorization: Bearer <access_token>
       "id": 1,
       "budget": 1,
       "amount": "250.00",
-      "category": "Salary",
+      "category": 3,
+      "description": "Monthly paycheck",
       "date": "2026-02-15",
       "created_at": "2026-02-15T09:30:00Z",
       "updated_at": "2026-02-15T09:30:00Z"
@@ -312,14 +419,15 @@ Authorization: Bearer <access_token>
 
 **Method:** POST
 **Path:** `/transactions/`
-**Description:** Create a transaction linked to a budget.
+**Description:** Create a transaction linked to a budget. Category and description are optional.
 
 **Request Body**
 ```json
 {
   "budget": 1,
   "amount": "-45.50",
-  "category": "Groceries",
+  "category": 2,
+  "description": "Weekly groceries",
   "date": "2026-02-16"
 }
 ```
@@ -330,7 +438,8 @@ Authorization: Bearer <access_token>
   "id": 2,
   "budget": 1,
   "amount": "-45.50",
-  "category": "Groceries",
+  "category": 2,
+  "description": "Weekly groceries",
   "date": "2026-02-16",
   "created_at": "2026-02-16T12:00:00Z",
   "updated_at": "2026-02-16T12:00:00Z"
@@ -349,7 +458,8 @@ Authorization: Bearer <access_token>
   "id": 2,
   "budget": 1,
   "amount": "-45.50",
-  "category": "Groceries",
+  "category": 2,
+  "description": "Weekly groceries",
   "date": "2026-02-16",
   "created_at": "2026-02-16T12:00:00Z",
   "updated_at": "2026-02-16T12:00:00Z"
@@ -366,7 +476,8 @@ Authorization: Bearer <access_token>
 ```json
 {
   "amount": "-50.00",
-  "category": "Food"
+  "category": 2,
+  "description": "Updated groceries"
 }
 ```
 
@@ -376,7 +487,8 @@ Authorization: Bearer <access_token>
   "id": 2,
   "budget": 1,
   "amount": "-50.00",
-  "category": "Food",
+  "category": 2,
+  "description": "Updated groceries",
   "date": "2026-02-16",
   "created_at": "2026-02-16T12:00:00Z",
   "updated_at": "2026-02-17T08:30:00Z"
